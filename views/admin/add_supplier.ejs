@@ -1,0 +1,10 @@
+<%- include('../partials/_headerAdmin', { title: 'Tambah Supplier', user: user, page_name: page_name }) %>
+<h1>Tambah Supplier Baru</h1>
+<form action="/admin/supplier/add" method="POST">
+    <p><label for="name_supplier">Nama Supplier:</label><input type="text" id="name_supplier" name="name_supplier" required></p>
+    <p><label for="email_supplier">Email:</label><input type="email" id="email_supplier" name="email_supplier" required></p>
+    <p><label for="pnumber_supplier">No. Telepon:</label><input type="text" id="pnumber_supplier" name="pnumber_supplier" required></p>
+    <p><label for="address_supplier">Alamat:</label><textarea id="address_supplier" name="address_supplier" rows="3" required></textarea></p>
+    <button type="submit">Simpan</button> <a href="/admin/dashboard">Batal</a>
+</form>
+<%- include('../partials/_footerAdmin') %>

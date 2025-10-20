@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Cart - Biji Kopi</title>
+    <link rel="stylesheet" href="/css/cart.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+</head>
+<body>
+<nav>
+    <div class="nav-center">
+        <a href="/">MAIN</a>
+        <a href="/foods">FOODS</a>
+        <a href="/drinks">DRINKS</a>
+        <% if (role === "customer") { %>
+            <a href="/cart">CART</a>
+        <% } %>
+        <% if (role === "admin") { %>
+            <a href="/admin/dashboard">ADMIN ONLY</a>
+        <% } %>
+        <a href="/transactions" class="active">HISTORY</a>
+        <a href="/forum">FORUM</a>
+    </div>
+
+    <div class="nav-right">
+        <% if (role) { %>
+            <span class="logged-as">LOGGED AS <%= role === "admin" ? user.fullname_admin : user.fullname_customer %></span>
+            <a href="/logout" class="login-btn">LOGOUT</a>
+        <% } else { %>
+            <a href="/login" class="login-btn">LOGIN</a>
+        <% } %>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 style="font-family: 'Poppins', sans-serif; padding-top:20px">Your Cart</h1>
+
+
+    <% if(cart.length === 0){ %>
+        <p class="empty-cart">Your cart is currently empty ☕</p>
+    <% } else { %>
+        <form action="/payment" method="POST" id="checkoutForm">
+            <table>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll"></th>
+                        <th>Name</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% cart.forEach(item => { %>
+                    <tr>
+                        <td>
+                            <input 
+                                type="checkbox" 
+                                name="selected[]" 
+                                value="<%= item.id_cart %>" 
+                                class="item-check" 
+                                data-total="<%= item.total_cart %>">
+                        </td>
+                        <td><%= item.name_cart %></td>
+                        <td><%= item.qty_cart %></td>
+                        <td>Rp <%= item.total_cart.toLocaleString("id-ID") %></td>
+                        <td>
+                            <button 
+                                formaction="/cart/remove" 
+                                formmethod="POST" 
+                                name="id_cart" 
+                                value="<%= item.id_cart %>" 
+                                class="remove-btn" 
+                                formnovalidate>
+                                Remove
+                            </button>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+
+            <div class="cart-summary">
+                <div class="total-box">
+                    <p><strong>Total Items:</strong> <%= cart.length %></p>
+                    <p><strong>Total All:</strong> Rp <%= totalPrice.toLocaleString("id-ID") %></p>
+                    <p><strong>Total Selected:</strong> <span id="selectedTotal">Rp 0</span></p>
+                </div>
+            </div>
+
+            <div class="checkout-container">
+                <button 
+                    type="submit" 
+                    name="action" 
+                    value="checkout" 
+                    class="checkout-btn">
+                    Proceed to Checkout
+                </button>
+            </div>
+        </form>
+    <% } %>
+</div>
+
+<script>
+    const selectAll = document.getElementById("selectAll");
+    const itemChecks = document.querySelectorAll(".item-check");
+    const totalSelected = document.getElementById("selectedTotal");
+    const checkoutForm = document.getElementById("checkoutForm");
+
+    function updateSelectedTotal() {
+        let sum = 0;
+        itemChecks.forEach(chk => {
+            if (chk.checked) sum += parseFloat(chk.dataset.total);
+        });
+        totalSelected.textContent = "Rp " + sum.toLocaleString("id-ID");
+    }
+
+    selectAll?.addEventListener("change", () => {
+        itemChecks.forEach(chk => chk.checked = selectAll.checked);
+        updateSelectedTotal();
+    });
+
+    itemChecks.forEach(chk => {
+        chk.addEventListener("change", () => {
+            selectAll.checked = [...itemChecks].every(c => c.checked);
+            updateSelectedTotal();
+        });
+    });
+
+    checkoutForm?.addEventListener("submit", (e) => {
+        // Cek tombol mana yang ditekan
+        const isCheckout = e.submitter?.name === "action" && e.submitter.value === "checkout";
+
+        // Jalankan validasi hanya kalau tombol checkout ditekan
+        if (isCheckout) {
+            const checked = [...itemChecks].some(chk => chk.checked);
+            if (!checked) {
+                e.preventDefault();
+                alert("Pilih minimal 1 item untuk checkout!");
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

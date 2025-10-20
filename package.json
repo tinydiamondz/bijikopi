@@ -1,0 +1,29 @@
+{
+  "name": "uts_awp",
+  "version": "1.0.0",
+  "description": "\"# bijikopi\" \r \"# bijikopi\"",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "mysql2": "^3.15.2",
+    "node": "^24.10.0"
+  }, 
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tinydiamondz/bijikopi.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tinydiamondz/bijikopi/issues"
+  },
+  "homepage": "https://github.com/tinydiamondz/bijikopi#readme"
+}

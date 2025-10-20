@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment - Biji Kopi</title>
+    <link rel="stylesheet" href="/css/payment.css">
+</head>
+<body>
+<div class="container">
+    <h2>Konfirmasi Pembayaran</h2>
+
+    <form method="POST" action="/confirm">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nama Item</th>
+                    <th>Qty</th>
+                    <th>Harga</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% let total = 0; %>
+                <% items.forEach(item => { %>
+                    <% let subtotal = item.total_cart; total += subtotal; %>
+                    <tr>
+                        <td><%= item.name_cart %></td>
+                        <td><%= item.qty_cart %></td>
+                        <td>Rp <%= (item.total_cart / item.qty_cart).toLocaleString('id-ID') %></td>
+                        <td>Rp <%= subtotal.toLocaleString('id-ID') %></td>
+                    </tr>
+                    <input type="hidden" name="selected[]" value="<%= item.id_cart %>">
+                <% }) %>
+            </tbody>
+        </table>
+
+        <div class="total">
+            <strong>Total Pembayaran:</strong> Rp <%= total.toLocaleString('id-ID') %>
+        </div>
+
+        <div class="payment-method">
+            <label for="payment_method"><strong>Pilih Metode Pembayaran:</strong></label>
+            <select name="payment_method" id="payment_method" required>
+                <option value="">-- Pilih Metode --</option>
+                <option value="Cash">Cash</option>
+                <option value="Debit">Debit</option>
+                <option value="E-Wallet">E-Wallet</option>
+            </select>
+        </div>
+
+        <div class="button-group">
+            <a href="/cart" class="btn-back">Kembali ke Keranjang</a>
+            <button type="submit" class="btn-pay">Bayar Sekarang</button>
+        </div>
+    </form>
+    
+
+</div>
+</body>
+</html>

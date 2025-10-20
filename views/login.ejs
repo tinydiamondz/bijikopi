@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Coffee Shop</title>
+  <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+  <div class="container">
+      <!-- TULISAN DI ATAS CARD -->
+      <p class="subtext top-text">Welcome Come Back 👋</p>
+
+      <!-- CARD LOGIN -->
+      <form method="POST" action="/login">
+          <h2>Login</h2>
+
+          <% if (error) { %>
+              <p class="error"><%= error %></p>
+          <% } %>
+
+          <input type="text" name="username" placeholder="Username" required>
+          <input type="password" name="password" placeholder="Password" required>
+
+          <button type="submit">Login</button>
+
+          <a href="/register">Belum punya akun? Register</a>
+      </form>
+  </div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<%- include('../partials/_headerAdmin', { title: 'Dashboard', user: user, page_name: page_name }) %>
+
+<h1>Admin Dashboard</h1>
+<p>Kelola semua data dari halaman ini.</p>
+
+<div class="section">
+    <h2>Manajemen Makanan <a href="/admin/food/add" class="btn btn-add" style="font-size: 0.8em; padding: 5px 10px;">+ Tambah</a></h2>
+    <table>
+        <thead>
+            <tr><th>ID</th><th>Nama</th><th>Stok</th><th>Harga</th><th>Aksi</th></tr>
+        </thead>
+        <tbody>
+            <% foods.forEach(f => { %>
+                <tr>
+                    <td><%= f.id_food %></td>
+                    <td><%= f.name_food %></td>
+                    <td><%= f.qty_food %></td>
+                    <td>Rp <%= f.price_food.toLocaleString('id-ID') %></td>
+                    <td class="actions">
+                        <a href="/admin/food/edit/<%= f.id_food %>" class="btn btn-edit">Edit</a>
+                        <form action="/admin/food/delete/<%= f.id_food %>" method="POST" onsubmit="return confirm('Yakin ingin menghapus?');" style="display:inline;">
+                            <button type="submit" class="btn btn-delete">Hapus</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+
+<div class="section">
+    <h2>Manajemen Minuman <a href="/admin/drink/add" class="btn btn-add" style="font-size: 0.8em; padding: 5px 10px;">+ Tambah</a></h2>
+    <table>
+        <thead>
+            <tr><th>ID</th><th>Nama</th><th>Stok</th><th>Harga</th><th>Aksi</th></tr>
+        </thead>
+        <tbody>
+            <% drinks.forEach(d => { %>
+                <tr>
+                    <td><%= d.id_drink %></td>
+                    <td><%= d.name_drink %></td>
+                    <td><%= d.qty_drink %></td>
+                    <td>Rp <%= d.price_drink.toLocaleString('id-ID') %></td>
+                    <td class="actions">
+                        <a href="/admin/drink/edit/<%= d.id_drink %>" class="btn btn-edit">Edit</a>
+                        <form action="/admin/drink/delete/<%= d.id_drink %>" method="POST" onsubmit="return confirm('Yakin ingin menghapus?');" style="display:inline;">
+                            <button type="submit" class="btn btn-delete">Hapus</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+
+<div class="section">
+    <h2>Manajemen Supplier <a href="/admin/supplier/add" class="btn btn-add" style="font-size: 0.8em; padding: 5px 10px;">+ Tambah</a></h2>
+    <table>
+        <thead>
+            <tr><th>ID</th><th>Nama</th><th>Email</th><th>No. Telp</th><th>Alamat</th><th>Aksi</th></tr>
+        </thead>
+        <tbody>
+            <% suppliers.forEach(s => { %>
+                <tr>
+                    <td><%= s.id_supplier %></td>
+                    <td><%= s.name_supplier %></td>
+                    <td><%= s.email_supplier %></td>
+                    <td><%= s.pnumber_supplier %></td>
+                    <td><%= s.address_supplier %></td>
+                    <td class="actions">
+                        <a href="/admin/supplier/edit/<%= s.id_supplier %>" class="btn btn-edit">Edit</a>
+                        <form action="/admin/supplier/delete/<%= s.id_supplier %>" method="POST" onsubmit="return confirm('Yakin ingin menghapus?');" style="display:inline;">
+                            <button type="submit" class="btn btn-delete">Hapus</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+
+<%- include('../partials/_footerAdmin') %>

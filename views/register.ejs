@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register Coffee Shop</title>
+  <link rel="stylesheet" href="/css/register.css">
+</head>
+<body>
+  <div class="container">
+      <!-- TULISAN DI ATAS CARD -->
+      <p class="subtext top-text">Join With Us!!!</p>
+
+      <!-- CARD REGISTER -->
+      <form method="POST" action="/register">
+          <h2>Register</h2>
+
+          <% if (error) { %>
+              <p class="error"><%= error %></p>
+          <% } %>
+
+          <% if (success) { %>
+              <p class="alert-success"><%= success %></p>
+          <% } %>
+
+          <!-- Sesuaikan dengan nama field di auth.js -->
+          <input type="text" name="fullname" placeholder="Full Name" required>
+          <input type="email" name="email" placeholder="Email" required>
+          <input type="text" name="pnumber" placeholder="Nomor Telepon" required>
+          <input type="text" name="username" placeholder="Username" required>
+          <input type="password" name="password" placeholder="Password" required>
+
+          <button type="submit">Register</button>
+
+          <a href="/login">Sudah punya akun? Login</a>
+      </form>
+  </div>
+</body>
+</html>

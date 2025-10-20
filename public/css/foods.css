@@ -1,0 +1,315 @@
+/* ===== FOODS MENU - BIJI KOPI ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", Arial, sans-serif;
+}
+
+/* ===== BODY ===== */
+body {
+  background-color: #f5f3ef;
+  color: #3e2723;
+}
+
+/* ===== NAVBAR ===== */
+nav {
+    background-color: #4e342e;
+    padding: 12px 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Tengah */
+.nav-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+}
+
+.nav-center a {
+    color: #fbe9e7;
+    text-decoration: none;
+    font-weight: 600;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+}
+
+.nav-center a:hover {
+    color: #ffcc80;
+}
+
+/* Kanan */
+.nav-right {
+    position: absolute;
+    right: 40px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-right .logged-as {
+    font-size: 13px;
+    color: #ffe0b2;
+}
+
+.login-btn {
+    color: #fbe9e7;
+    background-color: #6d4c41;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.login-btn:hover {
+    background-color: #8d6e63;
+    color: #fff3e0;
+}
+
+
+
+/* ===== CONTAINER ===== */
+.container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 24px;
+}
+
+/* ===== FOOD ITEM (ZIG-ZAG STYLE) ===== */
+.food-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 60px;
+  background-color: #fffaf5;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.food-item:hover {
+  transform: scale(1.01);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+.food-item:nth-child(even) {
+  flex-direction: row-reverse;
+}
+
+/* ===== FOOD IMAGE ===== */
+.food-img {
+  flex: 1;
+  height: 280px;
+  overflow: hidden;
+}
+
+.food-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.food-item:hover .food-img img {
+  transform: scale(1.05);
+}
+
+/* ===== FOOD INFO ===== */
+.food-info {
+  flex: 1;
+  padding: 25px;
+}
+
+.food-info h2 {
+  margin-bottom: 10px;
+  color: #4e342e;
+  font-size: 22px;
+}
+
+.food-info p {
+  color: #5d4037;
+  margin-bottom: 8px;
+  line-height: 1.4;
+  font-size: 15px;
+}
+
+/* ===== BUTTON ADD TO CART ===== */
+form {
+  margin-top: 12px;
+}
+
+button {
+  background-color: #4e342e;
+  color: #fffaf5;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+button:hover {
+  background-color: #6d4c41;
+  transform: scale(1.05);
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+  .food-item {
+    flex-direction: column;
+  }
+  .food-img {
+    width: 100%;
+    height: 200px;
+  }
+  .food-info {
+    padding: 20px;
+  }
+}
+
+.add-btn {
+    background-color: #4e342e;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.add-btn:hover {
+    background-color: #6d4c41;
+}
+
+.out-of-stock-btn {
+    background-color: #888;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+@media (max-width: 992px) {
+    nav {
+        padding: 10px 20px;
+    }
+
+    .nav-center {
+        gap: 20px;
+    }
+
+    .container {
+        max-width: 90%;
+        padding: 25px;
+    }
+}
+
+/* HP / Mobile */
+@media (max-width: 600px) {
+    nav {
+        flex-direction: column;
+        padding: 15px;
+        gap: 10px;
+    }
+
+    .nav-center {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .nav-right {
+        position: static;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .container {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .rating-box {
+        padding: 15px;
+    }
+
+    .rating-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .username {
+        font-size: 15px;
+    }
+
+    .stars {
+        font-size: 16px;
+    }
+
+    .comment {
+        font-size: 14px;
+    }
+
+    .date {
+        font-size: 12px;
+    }
+}
+/* Overlay latar belakang popup */
+.popup-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Kotak popup */
+.popup {
+    background: transparent;
+    backdrop-filter: blur(10px);
+    border: 1px solid gray;
+    padding: 25px 40px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.3s ease-in-out;
+    font-family: 'Poppins', sans-serif;
+}
+
+.popup h3 {
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.popup button {
+    margin-top: 15px;
+    background: #2e7d32;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.popup button:hover {
+    background: #256628;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}

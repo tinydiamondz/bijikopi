@@ -1,0 +1,207 @@
+body {
+    background-color: #f5f3ef;
+    color: #3e2723;
+    font-family: "Poppins", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fffaf5;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+/* ===== NAVBAR ===== */
+nav {
+    background-color: #4e342e;
+    padding: 12px 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Tengah */
+.nav-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+}
+
+.nav-center a {
+    color: #fbe9e7;
+    text-decoration: none;
+    font-weight: 600;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+}
+
+.nav-center a:hover {
+    color: #ffcc80;
+}
+
+/* Kanan */
+.nav-right {
+    position: absolute;
+    right: 40px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-right .logged-as {
+    font-size: 13px;
+    color: #ffe0b2;
+}
+
+.login-btn {
+    color: #fbe9e7;
+    background-color: #6d4c41;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.login-btn:hover {
+    background-color: #8d6e63;
+    color: #fff3e0;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #4e342e;
+}
+
+/* Table Wrapper */
+.transaction-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+/* Modern Table - Clean */
+.transaction-table {
+    width: 100%;
+    min-width: 600px;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.transaction-table th {
+    background-color: #6d4c41; /* solid color */
+    color: #fff3e0;
+    font-weight: 600;
+    text-align: center;
+    padding: 12px 15px;
+    position: sticky;
+    top: 0;
+}
+
+.transaction-table td {
+    text-align: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0e6dc;
+    transition: background-color 0.2s;
+}
+
+.transaction-table tr:nth-child(even) {
+    background-color: #fff7f0;
+}
+
+.transaction-table tr:hover {
+    background-color: #ffe8d6;
+}
+
+/* Total row highlight - kiri */
+.total-history {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: left; 
+    color: #4e342e;
+    background-color: #fff3e0; /* solid, no gradient */
+    padding: 12px 15px;
+    border-radius: 8px;
+}
+
+/* ====== RESPONSIVE DESIGN ====== */
+
+@media (max-width: 992px) {
+    nav {
+        padding: 10px 20px;
+    }
+
+    .nav-center {
+        gap: 20px;
+    }
+
+    .container {
+        max-width: 90%;
+        padding: 25px;
+    }
+}
+
+/* HP / Mobile */
+@media (max-width: 600px) {
+    nav {
+        flex-direction: column;
+        padding: 15px;
+        gap: 10px;
+    }
+
+    .nav-center {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .nav-right {
+        position: static;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .container {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .rating-box {
+        padding: 15px;
+    }
+
+    .rating-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .username {
+        font-size: 15px;
+    }
+
+    .stars {
+        font-size: 16px;
+    }
+
+    .comment {
+        font-size: 14px;
+    }
+
+    .date {
+        font-size: 12px;
+    }
+}

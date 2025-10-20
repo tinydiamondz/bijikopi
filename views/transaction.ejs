@@ -1,0 +1,79 @@
+nod<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>History Pembayaran</title>
+    <link rel="stylesheet" href="/css/transaction.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+    <nav>
+        <div class="nav-center">
+            <a href="/">MAIN</a>
+            <a href="/foods">FOODS</a>
+            <a href="/drinks">DRINKS</a>
+            <% if (role === "customer") { %>
+                <a href="/cart">CART</a>
+            <% } %>
+            <% if (role === "admin") { %>
+                <a href="/admin/dashboard">ADMIN ONLY</a>
+            <% } %>
+            <a href="/transactions" class="active">HISTORY</a>
+            <a href="/forum">FORUM</a>
+        </div>
+
+        <div class="nav-right">
+            <% if (role) { %>
+                <span class="logged-as">LOGGED AS <%= role === "admin" ? user.fullname_admin : user.fullname_customer %></span>
+                <a href="/logout" class="login-btn">LOGOUT</a>
+            <% } else { %>
+                <a href="/login" class="login-btn">LOGIN</a>
+            <% } %>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 style="font-family: 'Poppins', 'sans-serif';" align = "center">History Pembayaran</h1>
+
+        <% if (allItems.length === 0) { %>
+            <p>Belum ada transaksi.</p>
+        <% } else { %>
+
+            <div class="transaction-table-wrapper">
+                <table class="transaction-table">
+                    <thead>
+                        <tr>
+                            <th>Menu</th>
+                            <th>Qty</th>
+                            <th>Total</th>
+                            <th>Tanggal</th>
+                            <th>Metode Pembayaran</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% allItems.forEach(item => { %>
+                            <tr>
+                                <td><%= item.name_cart %></td>
+                                <td><%= item.qty_cart %></td>
+                                <td>Rp <%= item.total_cart.toLocaleString('id-ID') %></td>
+                                <td><%= new Date(item.date_transaction).toLocaleString('id-ID') %></td>
+                                <td><%= item.paymentMethod_transaction %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="total-history">
+                <span class="icon">💰</span>
+                Total Pembayaran: <strong>Rp <%= totalHistory.toLocaleString('id-ID') %></strong>
+            </div>
+
+        <% } %>
+    </div>
+</body>
+</html>

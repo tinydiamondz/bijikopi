@@ -1,0 +1,153 @@
+/* General Body & Fonts */
+body {
+    font-family: 'Poppins', 'sans-serif';
+    background-color: #f4f7f6;
+    color: #333;
+    margin: 0;
+    padding-top: 80px; /* Give space for the fixed navbar */
+}
+
+/* Navigation Bar Styling */
+nav {
+    background-color: #4e342e;
+    padding: 12px 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.nav-center a {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    color: #555;
+    text-decoration: none;
+    padding: 20px 15px;
+    transition: all 0.3s ease;
+}
+
+.nav-center a:hover, .nav-center a.active {
+    color: #000;
+    background-color: #f2f2f2;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+
+.logged-as {
+    font-size: 0.8em;
+    color: #888;
+    margin-right: 15px;
+    text-transform: uppercase;
+}
+
+.login-btn {
+    background-color: #333;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+    background-color: #555;
+}
+
+/* Main Content Container */
+.container {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.05);
+}
+
+h1, h2 {
+    font-family: 'Cinzel', serif;
+    color: #2c3e50;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+}
+
+th, td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Button & Action Styling */
+.actions a, .actions button {
+    margin-right: 5px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 8px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    color: white !important; /* Override link color */
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', 'sans-serif';
+    font-size: 14px;
+    transition: opacity 0.3s;
+}
+.btn:hover {
+    opacity: 0.8;
+}
+
+.btn-add { background-color: #28a745; }
+.btn-edit { background-color: #007bff; }
+.btn-delete { background-color: #dc3545; }
+
+/* Form Styling */
+form p {
+    margin-bottom: 15px;
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+input[type="text"], input[type="number"] {
+    width: 95%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+form button[type="submit"] {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+form a {
+    margin-left: 15px;
+    color: #555;
+    text-decoration: none;
+}

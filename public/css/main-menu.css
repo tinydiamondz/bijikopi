@@ -1,0 +1,729 @@
+/* Color Palette for Coffee Shop Theme */
+/* Dark Coffee: #4e342e */
+/* Medium Brown: #6d4c41 */
+/* Light Brown/Krem: #f4e3c1, #ffe0b2, #ffcc80 */
+/* Background: #f5f3ef, #fffaf5 */
+
+/* ===== RESET ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+    background-color: #7a6945;
+    color: #3e2723;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: background 0.3s ease;
+}
+
+
+
+/* ===== NAVBAR DENGAN EFEK RIPPLE AIR ===== */
+nav {
+    padding: 12px 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+    overflow: hidden;
+}
+
+/* Tengah */
+.nav-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    position: relative;
+}
+
+.nav-center a {
+    color: #fbe9e7;
+    text-decoration: none;
+    font-weight: 600;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efek ripple */
+.nav-center a::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.5s ease, height 0.5s ease, opacity 0.5s ease;
+    opacity: 0;
+}
+
+.nav-center a:hover::after {
+    width: 300%;
+    height: 300%;
+    opacity: 0;
+    animation: ripple-expand 0.7s ease-out forwards;
+}
+
+/* Animasi air */
+@keyframes ripple-expand {
+    0% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(0);
+        backdrop-filter: blur(0px);
+    }
+    50% {
+        opacity: 0.3;
+        transform: translate(-50%, -50%) scale(1.5);
+        backdrop-filter: blur(6px);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(3);
+        backdrop-filter: blur(10px);
+    }
+}
+
+.nav-center a:hover {
+    color: #ffcc80;
+}
+
+/* Kanan */
+.nav-right {
+    position: absolute;
+    right: 40px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-right .logged-as {
+    font-size: 13px;
+    color: #ffe0b2;
+}
+
+.login-btn {
+    color: #fbe9e7;
+    background-color: #6d4c41;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.login-btn:hover {
+    background-color: #8d6e63;
+    color: #fff3e0;
+}
+
+
+
+/* ===== CONTAINER UTAMA ===== */
+.container {
+    flex: 1;
+
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 25px;
+    background-color: #fffaf5;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+.main-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    margin-top: 35px;
+}
+
+.logo-frame {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background-color: #f4e3c1; /* Krem */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease;
+}
+
+.logo {
+    width: 70%;
+    height: auto;
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* ===== TEKS DI CONTAINER ===== */
+h1 {
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 2rem;
+    color: #4e342e;
+    font-family: 'Cinzel', serif;
+    padding-top: 30px;
+}
+
+p.description {
+    line-height: 1.7;
+    color: #5d4037;
+    font-size: 16px;
+    text-align: justify;
+    margin-bottom: 18px;
+    padding: 0 20px 20px 20px;
+}
+
+
+
+/* ===== BANNER GRID  ===== */
+.banner-grid {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    width: 90%;
+    max-width: 2000px;
+    margin: 40px auto;
+    flex-wrap: wrap; 
+}
+
+.banner-item {
+    position: relative;
+    width: 30%; 
+    min-width: 250px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.banner-item:hover {
+    transform: scale(1.05); 
+}
+
+.banner-item img {
+    width: 100%;
+    height: 100%; 
+    object-fit: cover;
+    display: block;
+}
+
+.banner-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(78, 52, 46, 0.7); 
+    color: white;
+    text-align: center;
+    padding: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.banner-item:hover .banner-overlay {
+    opacity: 1; /* Overlay muncul saat hover */
+}
+
+.banner-overlay p {
+    margin: 0;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+}
+
+/* Responsif untuk layar lebih kecil */
+@media (max-width: 768px) {
+    .banner-grid {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+    .banner-item {
+        width: 90%;
+        height: auto;
+    }
+    .banner-item img {
+        height: 200px;
+    }
+}
+
+
+/* Responsif untuk layar lebih kecil */
+@media (max-width: 768px) {
+    .carousel-container {
+        width: 95%;
+        margin: 20px auto;
+    }
+    .carousel-btn {
+        padding: 8px 12px;
+        font-size: 20px;
+    }
+    .carousel-indicators {
+        bottom: 10px;
+        gap: 6px;
+    }
+    .indicator {
+        width: 10px;
+        height: 10px;
+    }
+}
+/* --------------------------------- */
+/* ===== QUOTE SECTION BARU ===== */
+/* --------------------------------- */
+.quote-section {
+    background-color: #efebe9;
+    padding: 60px 20px;
+    text-align: center;
+    border-top: 1px solid #d7ccc8;
+}
+
+.quote-text {
+    font-size: 1.6em;
+    font-style: italic;
+    color: #4e342e;
+    max-width: 750px;
+    margin: 0 auto 15px;
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.5;
+}
+
+.quote-author {
+    font-size: 1.1em;
+    color: #6d4c41;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+/* Styling untuk Bagian Penawaran Spesial */
+
+.special-offers-section {
+    width: 90%;
+    max-width: 1200px; /* Sesuaikan dengan max-width container Anda */
+    margin: 40px auto;
+    text-align: center;
+}
+
+.special-offers-section h2 {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 2.2rem;
+    color: #4A2B20; /* Warna coklat kopi */
+    margin-bottom: 30px;
+    position: relative;
+    display: inline-block;
+}
+
+.special-offers-section h2::after {
+    content: '';
+    display: block;
+    width: 60%; 
+    height: 3px;
+    background-color: #A36B4F; /* Garis warna merah/pink/coklat muda */
+    margin: 5px auto 0;
+}
+
+.offers-carousel {
+    display: flex;
+    overflow-x: auto; 
+    scroll-snap-type: x mandatory;
+    gap: 20px;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    -ms-overflow-style: none;  
+    scrollbar-width: none;  
+}
+
+
+.offers-carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.offer-item {
+    min-width: 280px; 
+    flex: 0 0 auto; 
+    scroll-snap-align: start;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    transition: transform 0.3s ease;
+}
+
+.offer-item:hover {
+    transform: translateY(-5px);
+}
+
+.offer-item img {
+    width: 100%;
+    height: 250px; 
+    object-fit: cover;
+    display: block;
+}
+
+.offer-details {
+    padding: 15px 10px;
+    text-align: center;
+}
+
+.offer-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #4A2B20;
+    margin-bottom: 5px;
+}
+
+.offer-price-old {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    color: #999;
+    text-decoration: line-through;
+    margin-bottom: 5px;
+}
+
+.offer-price-new {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #E64A19; /* Warna diskon menonjol (merah/oranye) */
+    margin-top: 0;
+}
+
+.disclaimer {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 20px;
+}
+/* CONTAINER UNTUK SLIDING DENGAN TOMBOL */
+.carousel-wrapper {
+    position: relative;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* WADAH ITEM (SEKARANG HIDDEN SCROLL) */
+.offers-carousel-container {
+    display: flex;
+    overflow-x: hidden; /* PENTING: Scroll disembunyikan agar hanya tombol yang berfungsi */
+    scroll-behavior: smooth; /* Membuat transisi slide halus */
+    gap: 20px;
+    padding: 10px 0;
+}
+
+/* TOMBOL NAVIGASI */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #fffaf5;
+    border: 1px solid #d7ccc8;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    color: #4e342e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+    opacity: 0.8;
+}
+
+.carousel-btn:hover {
+    background-color: #ffe0b2;
+    opacity: 1;
+}
+
+.prev-offer-btn {
+    left: -20px;
+}
+
+.next-offer-btn {
+    right: -20px;
+}
+
+/* Responsif Tombol */
+@media (max-width: 768px) {
+    .carousel-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 1.2rem;
+        /* Posisikan di dalam wadah agar tidak hilang di layar kecil */
+        top: 40%;
+        left: 5px; 
+    }
+    .next-offer-btn {
+        right: 5px;
+        left: auto;
+    }
+}
+/* --------------------------------- */
+/* ===== LOCATION SECTION BARU ===== */
+/* --------------------------------- */
+.location-section {
+    padding: 60px 25px;
+    text-align: center;
+    background-color: #f5f3ef;
+}
+
+.location-section h2 {
+    font-family: 'Cinzel', serif;
+    color: #4e342e;
+    margin-bottom: 40px;
+    font-size: 2rem;
+    text-transform: uppercase;
+}
+
+.location-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.location-card {
+    background-color: #fffaf5;
+    border: 1px solid #d7ccc8;
+    padding: 60px;
+    width: 350px;
+    text-align: left;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s;
+}
+
+.location-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.location-card h4 {
+    font-family: 'Cinzel', serif;
+    color: #6d4c41;
+    margin-bottom: 10px;
+    font-size: 1.5em;
+    border-bottom: 1px solid #f4e3c1;
+    padding-bottom: 5px;
+}
+
+.location-card p {
+    font-size: 0.95em;
+    color: #5d4037;
+    margin-bottom: 8px;
+}
+
+.location-link {
+    color: #4e342e;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    margin-top: 10px;
+    border-bottom: 2px solid #ffcc80;
+    transition: color 0.2s;
+}
+
+.location-link:hover {
+    color: #6d4c41;
+}
+/* ===== CONTACT INFO BAR ===== */
+.contact-info-bar {
+    background-color: #212121; 
+    color: white;
+    padding: 30px 20px;
+    text-align: center; 
+    border-top: 5px solid #4e342e;
+    font-family: 'Poppins', sans-serif;
+}
+
+.contact-info-bar p {
+    margin: 8px auto; 
+    display: block;
+}
+
+
+.wa-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    margin-left: 8px;
+    transform: translateY(3px);
+    vertical-align: middle;
+}
+
+.curhat-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.wa-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.complaint-header {
+    font-size: 0.9em;
+    font-weight: 500;
+    color: #ffcc80;
+    margin-top: 20px;
+}
+
+.pkdn-info {
+    font-size: 0.85em;
+    color: #ccc;
+    max-width: 600px;
+    margin: 5px auto; 
+}
+
+.pkdn-wa {
+    font-size: 0.9em;
+    color: white;
+    font-weight: 600;
+}
+
+.phone-number {
+    font-weight: bold;
+    color: #ffcc80;
+    letter-spacing: 0.5px;
+}
+
+/* ===== FOOTER COPYRIGHT BAWAH ===== */
+footer {
+    text-align: center;
+    color: #795548;
+    font-size: 14px;
+    padding: 12px 0;
+    background-color: #efebe9;
+    border-top: 1px solid #d7ccc8;
+    margin-top: 0; 
+}
+
+/* Responsiveness dasar */
+@media (max-width: 768px) {
+    .nav-right {
+        position: static;
+        margin-top: 10px;
+        justify-content: center;
+    }
+    nav {
+        flex-direction: column;
+        padding: 15px 20px;
+    }
+
+    .main-footer {
+        padding: 30px 20px;
+        justify-content: flex-start;
+        gap: 20px;
+    }
+    .footer-col {
+        width: 45%;
+    }
+    .location-info {
+        flex-direction: column;
+        align-items: center;
+    }
+    .location-card {
+        width: 90%;
+    }
+}
+@media (max-width: 992px) {
+    nav {
+        padding: 10px 20px;
+    }
+
+    .nav-center {
+        gap: 20px;
+    }
+
+    .container {
+        max-width: 90%;
+        padding: 25px;
+    }
+}
+
+/* HP / Mobile */
+@media (max-width: 600px) {
+    nav {
+        flex-direction: column;
+        padding: 15px;
+        gap: 10px;
+    }
+
+    .nav-center {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .nav-right {
+        position: static;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .container {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .rating-box {
+        padding: 15px;
+    }
+
+    .rating-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .username {
+        font-size: 15px;
+    }
+
+    .stars {
+        font-size: 16px;
+    }
+
+    .comment {
+        font-size: 14px;
+    }
+
+    .date {
+        font-size: 12px;
+    }
+}

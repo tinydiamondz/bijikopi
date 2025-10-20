@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Menu Coffee Shop - Biji Kopi</title>
+    <link rel="stylesheet" href="/css/main-menu.css">
+    <link rel="stylesheet" href="/css/carousel.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+
+    <nav>
+        <div class="nav-center">
+            <a href="/">MAIN</a>
+            <a href="/foods">FOODS</a>
+            <a href="/drinks">DRINKS</a>
+            
+            <% if (role === "customer") { %>
+              <a href="/cart">CART</a>
+              <a href="/transactions" class="active">HISTORY</a>
+              <% } %>
+              
+              <% if (role === "admin") { %>
+                <a href="/admin/dashboard">ADMIN ONLY</a>
+                <% } %>
+            <a href="/forum">FORUM</a>
+        </div>
+
+        <div class="nav-right">
+            <% if (role) { %>
+                <span class="logged-as">LOGGED AS <%= role === "admin" ? user.fullname_admin : user.fullname_customer %></span>
+                <a href="/logout" class="login-btn">LOGOUT</a>
+            <% } else { %>
+                <a href="/login" class="login-btn">LOGIN</a>
+            <% } %>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="main-logo">
+            <div class="logo-frame">
+                <img src="/images/main/logo-bidji.png" alt="Biji Kopi Logo" class="logo">
+            </div>
+        </div>
+
+        <h1>Welcome to Biji Kopi!</h1>
+        <p class="description">
+            Di sini, aroma kopi segar menyapa setiap pengunjung begitu memasuki kafe. 
+            Setiap cangkir dibuat dari biji kopi pilihan, disangrai dengan teliti, dan disajikan dengan penuh perhatian untuk memanjakan lidah Anda. 
+            Suasana nyaman dan hangat membuat Biji Kopi menjadi tempat ideal untuk bersantai, bekerja, atau sekadar menikmati waktu berkualitas.
+        </p>
+        <p class="description">
+            Nikmati beragam pilihan minuman dan camilan lezat. Mulai dari kopi klasik, specialty latte, hingga teh premium, semua disiapkan dengan standar kualitas tinggi. 
+            Camilan dan dessert ala kafe, dari roti hangat hingga kue-kue mewah, menemani setiap tegukan dan menambah kenikmatan pengalaman Anda.
+        </p>
+        <p class="description">
+            Biji Kopi bukan sekadar minuman—ini pengalaman. Dengan pelayanan ramah, cita rasa unik, dan atmosfer yang hangat, setiap kunjungan di Biji Kopi akan meninggalkan kenangan manis dan menghadirkan kebahagiaan yang sesungguhnya.
+        </p>
+    </div>
+
+    <!-- Banner Grid Baru (Statis, Bukan Slide) -->
+    <div class="quote-section">
+        <p class="quote-text">
+            "Sebuah ide yang baik dimulai dengan secangkir kopi yang baik. Kopi yang baik adalah hasil dari biji yang seimbang"
+        </p>
+        <p class="quote-author">— FILOSOFI BIJI KOPI</p>
+    </div>
+    <div class="banner-grid">
+        <div class="banner-item">
+            <img src="/images/main/gambar main (1).png" alt="Banner 1 - Nikmati Kopi Segar">
+            <div class="banner-overlay">
+                <p>Nikmati Kopi Segar</p>
+            </div>
+        </div>
+        <div class="banner-item">
+            <img src="/images/main/gambar main (5).png" alt="Banner 2 - Suasana Nyaman di Biji Kopi">
+            <div class="banner-overlay">
+                <p>Suasana Nyaman</p>
+            </div>
+        </div>
+        <div class="banner-item">
+            <img src="/images/main/gambar main (4).png" alt="Banner 3 - Pilihan Menu Lezat">
+            <div class="banner-overlay">
+                <p>Pilihan Menu Lezat</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="special-offers-section">
+        <h2>Ada apa aja di Biji Kopi?</h2>
+        
+        <div class="carousel-wrapper">
+            <button class="carousel-btn prev-offer-btn">←</button>
+            <div class="offers-carousel-container"> 
+                
+                <div class="offer-item carousel-slide">
+                    <img src="/images/main/gambar menu (1).png" alt="Croissant Biji Kopi">
+                    <div class="offer-details">
+                        <p class="offer-name">Croissant</p>
+                        <p class="offer-price-new">Rp 15K</p>
+                    </div>
+                </div>
+                
+                <div class="offer-item carousel-slide">
+                    <img src="/images/main/gambar menu (2).png" alt="Hot Chocolate Biji Kopi">
+                    <div class="offer-details">
+                        <p class="offer-name">Hot Chocolate</p>
+                        <p class="offer-price-new">Rp 25K</p>
+                    </div>
+                </div>
+                
+                <div class="offer-item carousel-slide">
+                    <img src="/images/main/gambar menu (3).png" alt="Matcha Cake & Matcha Latte">
+                    <div class="offer-details">
+                        <p class="offer-name">Matcha Cake & Matcha Latte</p>
+                        <p class="offer-price-new">Rp 55K</p>
+                    </div>
+                </div>
+                
+                <div class="offer-item carousel-slide">
+                    <img src="/images/main/gambar menu (4).png" alt="Tiramisu Cake Biji Kopi">
+                    <div class="offer-details">
+                        <p class="offer-name">Tiramisu Cake</p> 
+                        <p class="offer-price-new">Rp 30K</p>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-btn next-offer-btn">→</button>
+        </div>
+    </div>
+
+    <div class="location-section">
+        <h2>Temukan Lokasi Kami</h2>
+        <div class="location-info">
+            <div class="location-card">
+                <h4>BIJI KOPI - Tangerang, Gading serpong</h4>
+                <p>Bez Plaza, Jalan Boulevard Raya Gading Serpong, Tangerang, 15810.</p>
+                <p>Jam Operasional: 07.00 - 22.00</p>
+            </div>
+            <div class="location-card">
+                <h4>BIJI KOPI - BANDUNG CIHAMPELAS</h4>
+                <p>Jl. Cihampelas No. 50, Bandung, 40116</p>
+                <p>Jam Operasional: 08.00 - 23.00</p>
+            </div>
+            <div class="location-card">
+                <h4>BIJI KOPI - JAKARTA SELATAN</h4>
+                <p>Jl. Jalan Dr. Sahardjo, Kuningan, 1250.</p>
+                <p>Jam Operasional: 08.00 - 23.00</p>
+            </div>
+            <div class="location-card">
+                <h4>BIJI KOPI - GALAXY BEKASI </h4>
+                <p>Jl. Galaxy No. 34, Galaxy, Bekasi 12345</p>
+                <p>Jam Operasional: 08.00 - 23.00</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact-info-bar">
+        <p class="curhat-text">
+            Curhat Yuk 
+            <span class="phone-number">081-296-418-855</span>
+            <img src="/images/main/wa.png" class="wa-icon" alt="WhatsApp Icon">
+            WhatsApp Chat Only
+        </p>
+
+        <p class="complaint-header">
+            Consumer Complaints Service Contact Information
+        </p>
+        <p class="pkdn-info">
+            Directorate General of Consumer Protection and Trade Compliance, Ministry of Trade of the Republic of Indonesia
+        </p>
+        <p class="pkdn-wa">
+            Whatsapp Ditjen PKTN: <span class="phone-number">0853-1111-1010</span>
+        </p>
+    </div>
+    
+    <footer>
+        © 2025 Biji Kopi — Crafted with Biji
+    </footer>
+
+    <script>
+        // --- LOGIKA CAROUSEL PENAWARAN SPESIAL BARU (DENGAN TOMBOL) ---
+const offersContainer = document.querySelector('.offers-carousel-container');
+const offerSlides = document.querySelectorAll('.offers-carousel-container .carousel-slide');
+const prevOfferBtn = document.querySelector('.prev-offer-btn');
+const nextOfferBtn = document.querySelector('.next-offer-btn');
+
+if (offersContainer && offerSlides.length > 0) {
+    let currentOfferSlide = 0;
+
+    function getSlideWidth() {
+        // Ambil lebar slide dan gap (20px)
+        if (offerSlides.length === 0) return 0;
+        const slideWidth = offerSlides[0].offsetWidth;
+        const gap = 20;
+        return slideWidth + gap;
+    }
+
+    function showOfferSlide(index) {
+        // Logika untuk loop carousel (kembali ke awal atau akhir)
+        if (index >= offerSlides.length - 1) { // -1 karena kita ingin berhenti di slide terakhir yang terlihat
+            currentOfferSlide = 0;
+        } else if (index < 0) {
+            // Kita hitung jumlah item yang bisa dilihat dalam satu tampilan
+            const visibleItems = Math.floor(offersContainer.offsetWidth / getSlideWidth());
+            currentOfferSlide = offersContainer.children.length - visibleItems;
+        } else {
+            currentOfferSlide = index;
+        }
+
+        // Gulir kontainer ke posisi yang dihitung
+        const offset = currentOfferSlide * getSlideWidth();
+        offersContainer.scrollTo({
+            left: offset,
+            behavior: 'smooth'
+        });
+    }
+
+    // Event listener untuk tombol
+    nextOfferBtn.addEventListener('click', () => {
+        // Slide satu item per klik
+        showOfferSlide(currentOfferSlide + 1);
+    });
+    
+    prevOfferBtn.addEventListener('click', () => {
+        // Slide satu item per klik
+        showOfferSlide(currentOfferSlide - 1);
+    });
+
+    // Sesuaikan posisi saat jendela diubah ukurannya
+    window.addEventListener('resize', () => {
+        showOfferSlide(currentOfferSlide);
+    });
+
+    // Inisialisasi posisi slide
+    showOfferSlide(currentOfferSlide);
+}
+    </script>
+
+    
+    <script>
+document.querySelectorAll('.ripple-navbar a').forEach(link => {
+  link.addEventListener('mouseenter', e => {
+    const ripple = document.createElement('span');
+    ripple.classList.add('ripple');
+    link.appendChild(ripple);
+
+    const rect = link.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+
+    setTimeout(() => ripple.remove(), 700);
+  });
+});
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+<%- include('../partials/_headerAdmin', { title: 'Tambah Makanan', user: user, page_name: page_name }) %>
+<h1>Tambah Menu Makanan Baru</h1>
+<form action="/admin/food/add" method="POST">
+    <p><label for="name_food">Nama Makanan:</label><input type="text" id="name_food" name="name_food" required></p>
+    <p><label for="qty_food">Stok:</label><input type="number" id="qty_food" name="qty_food" required></p>
+    <p><label for="price_food">Harga:</label><input type="number" id="price_food" name="price_food" required></p>
+    <button type="submit">Simpan</button> <a href="/admin/dashboard">Batal</a>
+</form>
+<%- include('../partials/_footerAdmin') %>

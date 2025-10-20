@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum Penilaian - Biji Kopi</title>
+    <link rel="stylesheet" href="/css/forum.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+  <nav>
+    <div class="nav-center">
+      <a href="/">MAIN</a>
+      <a href="/foods">FOODS</a>
+      <a href="/drinks">DRINKS</a>
+      <% if (role === "customer") { %>
+        <a href="/cart">CART</a>
+        <a href="/transactions">HISTORY</a>
+      <% } %>
+      <% if (role === "admin") { %>
+        <a href="/admin/dashboard">ADMIN ONLY</a>
+      <% } %>
+      <a href="/forum" class="active">FORUM</a>
+    </div>
+
+    <div class="nav-right">
+      <% if (role) { %>
+        <span class="logged-as">
+          LOGGED AS <%= role === "admin" ? user.fullname_admin : user.fullname_customer %>
+        </span>
+        <a href="/logout" class="login-btn">LOGOUT</a>
+      <% } else { %>
+        <a href="/login" class="login-btn">LOGIN</a>
+      <% } %>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h2 style="font-family: 'Poppins', 'sans-serif';" class="forum-title">Real Experiences from Our Customers</h2>
+
+    <% if (ratings.length === 0) { %>
+      <p class="no-rating">Belum ada rating dari pengguna.</p>
+    <% } else { %>
+      <% ratings.forEach(r => { %>
+        <div class="rating-card">
+          <div class="rating-header">
+            <span class="username"><%= r.fullname_customer %></span>
+          </div>
+
+          <div class="purchased-items">
+            <% if (r.purchasedItems && r.purchasedItems.length > 0) { %>
+              <p class="subtitle">Produk yang dibeli:</p>
+              <ul>
+                <% r.purchasedItems.forEach(item => { %>
+                  <li>
+                    <span class="item-name"><%= item.name %></span>
+                    <span class="item-info">
+                      (Qty: <%= item.qty %>)  
+                      <span class="stars">
+                        <% for(let i = 1; i <= 5; i++){ %>
+                          <% if(i <= item.value_rating){ %>
+                            <span class="star filled">★</span>
+                          <% } else { %>
+                            <span class="star">☆</span>
+                          <% } %>
+                        <% } %>
+                      </span>
+                    </span>
+                  </li>
+                <% }) %>
+              </ul>
+            <% } else { %>
+              <em>Belum ada data pembelian.</em>
+            <% } %>
+          </div>
+
+          <div class="comment">
+            "<%= r.comment_rating || 'Tidak ada komentar.' %>"
+          </div>
+
+          <div class="date">
+            Dikirim pada: <%= new Date(r.date_rating).toLocaleString("id-ID") %>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </main>
+
+</body>
+</html>

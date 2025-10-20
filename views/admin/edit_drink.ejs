@@ -1,0 +1,9 @@
+<%- include('../partials/_headerAdmin', { title: 'Edit Minuman', user: user, page_name: page_name }) %>
+<h1>Edit Menu: <%= drink.name_drink %></h1>
+<form action="/admin/drink/edit/<%= drink.id_drink %>" method="POST">
+    <p><label for="name_drink">Nama Minuman:</label><input type="text" id="name_drink" name="name_drink" value="<%= drink.name_drink %>" required></p>
+    <p><label for="qty_drink">Stok:</label><input type="number" id="qty_drink" name="qty_drink" value="<%= drink.qty_drink %>" required></p>
+    <p><label for="price_drink">Harga:</label><input type="number" id="price_drink" name="price_drink" value="<%= drink.price_drink %>" required></p>
+    <button type="submit">Update</button> <a href="/admin/dashboard">Batal</a>
+</form>
+<%- include('../partials/_footerAdmin') %>

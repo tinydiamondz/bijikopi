@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Drinks Menu - Biji Kopi</title>
+    <link rel="stylesheet" href="/css/drinks.css">
+    <link rel="stylesheet" href="/css/popup.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+</head>
+<body>
+    <% if (added == 1) { %>
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup">
+            <h3>Item successfully added to your cart! 🛒</h3>
+            <button id="closePopup">OK</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const popupOverlay = document.getElementById("popupOverlay");
+            const closePopup = document.getElementById("closePopup");
+
+            popupOverlay.style.display = "flex";
+
+            closePopup.addEventListener("click", function() {
+                popupOverlay.style.display = "none";
+            });
+
+            popupOverlay.addEventListener("click", function(e) {
+                if (e.target === popupOverlay) {
+                    popupOverlay.style.display = "none";
+                }
+            });
+        });
+    </script>
+    <% } %>
+      
+    <nav>
+        <div class="nav-center">
+            <a href="/">MAIN</a>
+            <a href="/foods">FOODS</a>
+            <a href="/drinks" class="active">DRINKS</a>
+            <% if (role === "customer") { %>
+                <a href="/cart">CART</a>
+            <% } %>
+                
+            <% if (role === "admin") { %>
+                <a href="/admin/dashboard">ADMIN ONLY</a>
+            <% } %>
+            <a href="/transactions">HISTORY</a>
+            <a href="/forum">FORUM</a>
+        </div>
+
+        <div class="nav-right">
+            <% if (role) { %>
+                <span class="logged-as">LOGGED AS <%= role === "admin" ? user.fullname_admin : user.fullname_customer %></span>
+                <a href="/logout" class="login-btn">LOGOUT</a>
+            <% } else { %>
+                <a href="/login" class="login-btn">LOGIN</a>
+            <% } %>
+        </div>
+    </nav>
+
+    <div class="container">
+        <% drinks.forEach((drink, index) => { %>
+            <div class="drink-item">
+                <div class="drink-img">
+                    <img src="/images/drinks/<%= drink.image %>" alt="<%= drink.name_drink %>" style="width:100%; height:100%; object-fit:cover;">
+                </div>
+
+                <div class="drink-info">
+                    <h2><%= drink.name_drink %></h2>
+                    <p>Qty: <%= drink.qty_drink %> | Price: Rp <%= drink.price_drink.toLocaleString() %></p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Deskripsi minuman di sini.</p>
+
+                    <% if (drink.qty_drink > 0) { %>
+                        <form action="/add-to-cart" method="POST">
+                            <input type="hidden" name="id" value="<%= drink.id_drink %>">
+                            <input type="hidden" name="type" value="drink">
+                            <button type="submit" class="add-btn">Add to Cart</button>
+                        </form>
+                    <% } else { %>
+                        <button class="out-of-stock-btn" disabled>Out of Stock</button>
+                    <% } %>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+
+</body>
+</html>

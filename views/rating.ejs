@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Beri Rating</title>
+  <link rel="stylesheet" href="/css/rating.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Beri Rating Pesananmu</h2>
+
+    <form id="ratingForm">
+      <input type="hidden" name="count" value="<%= items.length %>">
+
+      <% items.forEach((item, idx) => { %>
+        <div class="menu-rating">
+          <p><strong><%= item.name_cart %> (Qty: <%= item.qty_cart %>)</strong></p>
+
+          <div class="stars" data-index="<%= idx %>">
+            <% for(let s=1; s<=5; s++){ %>
+              <span class="star" data-value="<%= s %>">&#9733;</span>
+            <% } %>
+          </div>
+
+          <input type="hidden" name="value_rating_<%= idx %>" value="0">
+          <input type="hidden" name="name_cart_<%= idx %>" value="<%= item.name_cart %>">
+          <input type="hidden" name="qty_<%= idx %>" value="<%= item.qty_cart %>">
+        </div>
+        <hr>
+      <% }) %>
+
+      <div class="global-comment">
+        <label for="comment_rating">Komentar Umum Pesanan (opsional):</label>
+        <textarea id="comment_rating" name="comment_rating" placeholder="Komentar untuk seluruh pesanan"></textarea>
+      </div>
+
+      <button type="submit" id="submitBtn">Kirim Review</button>
+      <button type="submit" id="skipBtn" style="background-color:#bdbdbd; margin-left:10px;">Skip Review</button>
+    </form>
+  </div>
+
+  <script>
+    // 🌟 STAR INTERACTIONS
+    document.querySelectorAll('.stars').forEach(starDiv => {
+      const idx = starDiv.dataset.index;
+      const stars = starDiv.querySelectorAll('.star');
+
+      function updateStars(value) {
+        stars.forEach((s, i) => s.style.color = i < value ? 'gold' : '#ccc');
+      }
+
+      stars.forEach(star => {
+        star.addEventListener('click', () => {
+          const value = parseInt(star.dataset.value);
+          document.querySelector(`input[name='value_rating_${idx}']`).value = value;
+          updateStars(value);
+        });
+        star.addEventListener('mouseover', () => updateStars(parseInt(star.dataset.value)));
+        star.addEventListener('mouseout', () => {
+          const selectedValue = parseInt(document.querySelector(`input[name='value_rating_${idx}']`).value);
+          updateStars(selectedValue);
+        });
+      });
+
+      updateStars(parseInt(document.querySelector(`input[name='value_rating_${idx}']`).value));
+    });
+
+    // 📨 SUBMIT RATING & SKIP
+    document.getElementById('ratingForm').addEventListener('submit', function(e){
+      e.preventDefault();
+
+      const isSkip = e.submitter.id === "skipBtn"; // cek tombol
+      const count = parseInt(document.querySelector('input[name="count"]').value);
+      const comment_rating = document.getElementById('comment_rating').value;
+
+      if(!isSkip){
+        // CEK semua rating wajib diisi
+        for (let i = 0; i < count; i++) {
+          const val = parseInt(document.querySelector(`input[name='value_rating_${i}']`).value);
+          if(!val || val === 0){
+            alert("⚠️ Semua menu wajib diberi bintang sebelum kirim review!");
+            return;
+          }
+        }
+      }
+
+      const ratings = [];
+      for(let i=0; i<count; i++){
+        const val = document.querySelector(`input[name='value_rating_${i}']`).value;
+        ratings.push({
+          name_cart: document.querySelector(`input[name='name_cart_${i}']`).value,
+          qty: document.querySelector(`input[name='qty_${i}']`).value,
+          value_rating: isSkip ? 0 : val
+        });
+      }
+
+      fetch('/rating/submit', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ ratings, comment_rating, isSkip })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.success){
+          if(isSkip){
+            window.location.href = '/transactions';
+          } else {
+            window.location.href = '/forum';
+          }
+        } else {
+          alert('❌ Gagal proses transaksi.');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

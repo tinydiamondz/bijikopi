@@ -1,0 +1,228 @@
+/* ===== PAYMENT PAGE - BIJI KOPI ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", Arial, sans-serif;
+}
+
+/* ===== BODY ===== */
+body {
+    background-color: #f5f3ef;
+    color: #3e2723;
+    min-height: 100vh;
+}
+
+/* ===== CONTAINER ===== */
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 30px 24px;
+    background-color: #fffaf5;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.container h2 {
+    text-align: center;
+    color: #4e342e;
+    margin-bottom: 24px;
+}
+
+/* ===== TABLE ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th {
+    background-color: #d7ccc8;
+    color: #3e2723;
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+}
+
+td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #d7ccc8;
+    color: #4e342e;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+tr:hover td {
+    background-color: #f0ebe7;
+}
+
+/* Highlight untuk subtotal baris terakhir */
+tbody tr:last-child td {
+    font-weight: 600;
+    background-color: #efebe9;
+}
+
+/* ===== TOTAL ===== */
+.total {
+    text-align: right;
+    font-size: 16px;
+    color: #4e342e;
+    margin-bottom: 20px;
+}
+
+.total strong {
+    font-size: 18px;
+}
+
+/* ===== PAYMENT METHOD ===== */
+.payment-method {
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.payment-method select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #bcaaa4;
+    font-size: 14px;
+    background-color: #fff;
+    color: #3e2723;
+    transition: all 0.2s ease;
+}
+
+.payment-method select:focus {
+    outline: none;
+    border-color: #4e342e;
+    box-shadow: 0 0 5px rgba(78, 52, 46, 0.5);
+}
+
+/* ===== BUTTONS ===== */
+.btn-pay,
+.btn-back {
+    display: inline-block;
+    padding: 12px 28px;
+    border-radius: 10px;
+    text-decoration: none;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border: none;
+}
+
+.btn-pay {
+    background: linear-gradient(135deg, #6d4c41, #4e342e);
+    color: #fffaf5;
+    box-shadow: 0 4px 12px rgba(78, 52, 46, 0.3);
+    margin-right: 12px;
+}
+
+.btn-pay:hover {
+    background: linear-gradient(135deg, #7d5a4c, #5a3b2d);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(78, 52, 46, 0.35);
+}
+
+.btn-back {
+    background-color: #d7ccc8;
+    color: #4e342e;
+    border: 1px solid #bcaaa4;
+    padding: 12px 24px;
+}
+
+.btn-back:hover {
+    background-color: #bcaaa4;
+    color: #3e2723;
+    transform: translateY(-1px);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+        margin: 30px auto;
+    }
+
+    th, td {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .total {
+        font-size: 15px;
+    }
+
+    .btn-pay,
+    .btn-back {
+        width: 100%;
+        margin-bottom: 12px;
+    }
+
+/* ===== CUSTOM SELECT ===== */
+.payment-method {
+    position: relative;
+}
+
+.payment-method select {
+    width: 100%;
+    padding: 12px 18px;
+    border-radius: 14px;
+    border: 2px solid #bcaaa4;
+    font-size: 15px;
+    color: #3e2723;
+    background-color: #fffaf5;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+/* Hapus arrow bawaan (Chrome/Edge/Firefox) */
+.payment-method select::-ms-expand {
+    display: none;
+}
+
+/* Tambahkan panah custom */
+.payment-method::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+    border-left: 2px solid #4e342e;
+    border-bottom: 2px solid #4e342e;
+    transform: translateY(-50%) rotate(-45deg);
+    transition: transform 0.3s ease;
+}
+
+/* Rotate panah saat focus */
+.payment-method select:focus + ::after,
+.payment-method select:active + ::after {
+    transform: translateY(-50%) rotate(135deg);
+}
+
+/* Hover & focus styles */
+.payment-method select:hover {
+    border-color: #4e342e;
+    box-shadow: 0 3px 10px rgba(78,52,46,0.2);
+}
+
+.payment-method select:focus {
+    outline: none;
+    border-color: #6d4c41;
+    box-shadow: 0 0 10px rgba(109,76,65,0.4);
+}
+
+/* Placeholder option */
+.payment-method select option[value=""] {
+    color: #8d6e63;
+}
+
+
+}
