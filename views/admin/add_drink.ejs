@@ -1,9 +1,29 @@
-<%- include('../partials/_headerAdmin', { title: 'Tambah Minuman', user: user, page_name: page_name }) %>
-<h1>Tambah Menu Minuman Baru</h1>
-<form action="/admin/drink/add" method="POST">
-    <p><label for="name_drink">Nama Minuman:</label><input type="text" id="name_drink" name="name_drink" required></p>
-    <p><label for="qty_drink">Stok:</label><input type="number" id="qty_drink" name="qty_drink" required></p>
-    <p><label for="price_drink">Harga:</label><input type="number" id="price_drink" name="price_drink" required></p>
-    <button type="submit">Simpan</button> <a href="/admin/dashboard">Batal</a>
-</form>
-<%- include('../partials/_footerAdmin') %>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Minuman - Admin</title>
+    <link rel="stylesheet" href="/css/admin-form.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <form action="/admin/drink/add" method="POST">
+        <h1>Tambah Menu Minuman</h1>
+        
+        <label for="name_drink">Nama Minuman</label>
+        <input type="text" id="name_drink" name="name_drink" required placeholder="Contoh: Macha Latte">
+        
+        <label for="qty_drink">Stok</label>
+        <input type="number" id="qty_drink" name="qty_drink" required placeholder="Contoh: 50">
+        
+        <label for="price_drink">Harga</label>
+        <input type="number" id="price_drink" name="price_drink" required placeholder="Contoh: 30000">
+        
+        <div class="form-actions">
+            <button type="submit">Simpan</button>
+            <a href="/admin/drinks">Batal</a>
+        </div>
+    </form>
+</body>
+</html>

@@ -1,4 +1,18 @@
 // connect.js
+// const mysql = require("mysql2");
+
+// const pool = mysql.createPool({
+//     host: "localhost",
+//     user: "root",
+//     password: "",
+//     database: "cs_kelompok5",
+//     waitForConnections: true,
+//     connectionLimit: 10,
+//     queueLimit: 0
+// });
+
+
+// connect.js
 const mysql = require("mysql2");
 
 const pool = mysql.createPool({
@@ -11,6 +25,8 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
+
+// Cek koneksi untuk memastikan database bisa diakses
 pool.getConnection((err, connection) => {
     if (err) {
         console.error("❌ Database connection failed:", err.message);
@@ -22,3 +38,7 @@ pool.getConnection((err, connection) => {
 
 // export versi promise supaya bisa pakai async/await
 module.exports = pool.promise();
+
+
+
+  

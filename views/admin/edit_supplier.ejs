@@ -1,10 +1,32 @@
-<%- include('../partials/_headerAdmin', { title: 'Edit Supplier', user: user, page_name: page_name }) %>
-<h1>Edit Supplier: <%= supplier.name_supplier %></h1>
-<form action="/admin/supplier/edit/<%= supplier.id_supplier %>" method="POST">
-    <p><label for="name_supplier">Nama Supplier:</label><input type="text" id="name_supplier" name="name_supplier" value="<%= supplier.name_supplier %>" required></p>
-    <p><label for="email_supplier">Email:</label><input type="email" id="email_supplier" name="email_supplier" value="<%= supplier.email_supplier %>" required></p>
-    <p><label for="pnumber_supplier">No. Telepon:</label><input type="text" id="pnumber_supplier" name="pnumber_supplier" value="<%= supplier.pnumber_supplier %>" required></p>
-    <p><label for="address_supplier">Alamat:</label><textarea id="address_supplier" name="address_supplier" rows="3" required><%= supplier.address_supplier %></textarea></p>
-    <button type="submit">Update</button> <a href="/admin/dashboard">Batal</a>
-</form>
-<%- include('../partials/_footerAdmin') %>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Supplier - Admin</title>
+    <link rel="stylesheet" href="/css/admin-form.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <form action="/admin/supplier/edit/<%= supplier.id_supplier %>" method="POST">
+        <h1>Edit: <%= supplier.name_supplier %></h1>
+        
+        <label for="name_supplier">Nama Supplier</label>
+        <input type="text" id="name_supplier" name="name_supplier" value="<%= supplier.name_supplier %>" required>
+        
+        <label for="email_supplier">Email</label>
+        <input type="email" id="email_supplier" name="email_supplier" value="<%= supplier.email_supplier %>" required>
+        
+        <label for="pnumber_supplier">No. Telepon</label>
+        <input type="text" id="pnumber_supplier" name="pnumber_supplier" value="<%= supplier.pnumber_supplier %>" required>
+
+        <label for="address_supplier">Alamat</label>
+        <textarea id="address_supplier" name="address_supplier" rows="3" required><%= supplier.address_supplier %></textarea>
+        
+        <div class="form-actions">
+            <button type="submit">Update Data</button>
+            <a href="/admin/suppliers">Batal</a>
+        </div>
+    </form>
+</body>
+</html>

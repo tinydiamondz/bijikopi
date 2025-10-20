@@ -1,0 +1,123 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+    scroll-behavior: smooth;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f3ef;
+    background-size: cover;
+    padding: 20px; /* Tambahkan padding agar form tidak menempel di tepi layar kecil */
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 250, 245, 0.75); /* Sedikit lebih tebal agar lebih terbaca */
+    backdrop-filter: blur(10px);
+    padding: 35px 40px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 420px; /* Batas lebar maksimum */
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    animation: fadeSlideInRight 0.6s ease;
+}
+
+@keyframes fadeSlideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+h1 {
+    text-align: center;
+    color: #4e342e;
+    margin-bottom: 25px;
+    font-weight: 700;
+    font-size: 24px;
+}
+
+label {
+    color: #5d4037;
+    font-weight: 600;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+textarea {
+    border: 1px solid #d7ccc8;
+    border-radius: 10px;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    width: 100%; /* Ubah agar input mengisi lebar form */
+    background-color: rgba(255,255,255,0.9);
+    transition: all 0.3s ease;
+}
+
+textarea {
+    resize: vertical; /* Izinkan user mengubah tinggi textarea */
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: #8d6e63;
+    box-shadow: 0 0 8px rgba(141,110,99,0.3);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between; /* Tombol di kiri, link di kanan */
+    align-items: center;
+    margin-top: 10px;
+}
+
+button {
+    background-color: #4e342e;
+    color: #fffaf5;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 25px; /* Sedikit lebih lebar */
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #5d4037;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+
+.form-actions a {
+    color: #5d4037;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.form-actions a:hover {
+    color: #a1887f;
+    text-decoration: underline;
+}

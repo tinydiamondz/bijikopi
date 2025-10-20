@@ -29,7 +29,7 @@ router.post("/register", async (req, res) => {
                 success: null
             });
         }
-        
+
         // 2️⃣ Insert ke customer
         const sqlInsert = `
             INSERT INTO customer 
@@ -77,7 +77,7 @@ router.post("/login", async (req, res) => {
             // login sukses admin
             req.session.user = resultAdmin[0];
             req.session.role = "admin";
-            return res.redirect("/admin/dashboard");
+            return res.redirect("/");
         }
 
         // Kalau tidak ada di admin, cek tabel customer

@@ -1,0 +1,29 @@
+<%- include('../partials/_headerAdmin', { title: 'Manajemen Supplier', user: user, page_name: 'suppliers' }) %>
+
+<div class="section">
+    <h2>Manajemen Supplier <a href="/admin/supplier/add" class="btn btn-add">+ Tambah Supplier</a></h2>
+    <table>
+        <thead>
+            <tr><th>ID</th><th>Nama</th><th>Email</th><th>No. Telp</th><th>Alamat</th><th>Aksi</th></tr>
+        </thead>
+        <tbody>
+            <% suppliers.forEach(s => { %>
+                <tr>
+                    <td><%= s.id_supplier %></td>
+                    <td><%= s.name_supplier %></td>
+                    <td><%= s.email_supplier %></td>
+                    <td><%= s.pnumber_supplier %></td>
+                    <td><%= s.address_supplier %></td>
+                    <td class="actions">
+                        <a href="/admin/supplier/edit/<%= s.id_supplier %>" class="btn btn-edit">Edit</a>
+                        <form action="/admin/supplier/delete/<%= s.id_supplier %>" method="POST" onsubmit="return confirm('Yakin?');" style="display:inline;">
+                            <button type="submit" class="btn btn-delete">Hapus</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+
+<%- include('../partials/_footerAdmin') %>

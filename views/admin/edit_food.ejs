@@ -1,9 +1,29 @@
-<%- include('../partials/_headerAdmin', { title: 'Edit Makanan', user: user, page_name: page_name }) %>
-<h1>Edit Menu: <%= food.name_food %></h1>
-<form action="/admin/food/edit/<%= food.id_food %>" method="POST">
-    <p><label for="name_food">Nama Makanan:</label><input type="text" id="name_food" name="name_food" value="<%= food.name_food %>" required></p>
-    <p><label for="qty_food">Stok:</label><input type="number" id="qty_food" name="qty_food" value="<%= food.qty_food %>" required></p>
-    <p><label for="price_food">Harga:</label><input type="number" id="price_food" name="price_food" value="<%= food.price_food %>" required></p>
-    <button type="submit">Update</button> <a href="/admin/dashboard">Batal</a>
-</form>
-<%- include('../partials/_footerAdmin') %>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Makanan - Admin</title>
+    <link rel="stylesheet" href="/css/admin-form.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <form action="/admin/food/edit/<%= food.id_food %>" method="POST">
+        <h1>Edit: <%= food.name_food %></h1>
+        
+        <label for="name_food">Nama Makanan</label>
+        <input type="text" id="name_food" name="name_food" value="<%= food.name_food %>" required>
+        
+        <label for="qty_food">Stok</label>
+        <input type="number" id="qty_food" name="qty_food" value="<%= food.qty_food %>" required>
+        
+        <label for="price_food">Harga</label>
+        <input type="number" id="price_food" name="price_food" value="<%= food.price_food %>" required>
+        
+        <div class="form-actions">
+            <button type="submit">Update Data</button>
+            <a href="/admin/foods">Batal</a>
+        </div>
+    </form>
+</body>
+</html>
