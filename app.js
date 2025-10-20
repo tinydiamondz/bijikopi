@@ -41,5 +41,5 @@ app.use((req, res) => {
 });
 
 // Jalankan server
-const PORT = 443;
+const PORT = 80;
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
