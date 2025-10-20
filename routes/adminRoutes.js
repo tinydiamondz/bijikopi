@@ -112,6 +112,38 @@ router.get("/admin/food/edit/:id", async (req, res) => {
     }
 });
 
+router.get("/admin/food/export", async (req, res) => {
+    try {
+        const [foods] = await db.query("SELECT * FROM food");
+
+        if (foods.length === 0) {
+            return res.status(404).send("Tidak ada data makanan untuk diekspor.");
+        }
+
+        // Buat header CSV dari nama kolom
+        const headers = Object.keys(foods[0]).join(',');
+
+        // Ubah setiap baris data menjadi string CSV
+        const rows = foods.map(food => {
+            return Object.values(food).map(value => {
+                const strValue = String(value).replace(/"/g, '""'); // Escape double quotes
+                return `"${strValue}"`; // Bungkus semua nilai dengan kutip ganda
+            }).join(',');
+        }).join('\n');
+
+        const csvContent = `${headers}\n${rows}`;
+
+        // Set header agar browser men-download file
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename="laporan_makanan.csv"');
+        res.status(200).send(csvContent);
+
+    } catch (err) {
+        console.error("Gagal mengekspor data makanan:", err);
+        res.status(500).send("Server Error");
+    }
+});
+
 // Proses edit food
 router.post("/admin/food/edit/:id", async (req, res) => {
     const { id } = req.params;
@@ -135,7 +167,30 @@ router.post("/admin/drink/add", async (req, res) => { /* ... logika ... */ await
 router.get("/admin/drink/edit/:id", async (req, res) => { try { const { id } = req.params; const [drinks] = await db.query("SELECT * FROM drink WHERE id_drink = ?", [id]); if (drinks.length === 0) { return res.status(404).send("Minuman tidak ditemukan."); } res.render("admin/edit_drink", { drink: drinks[0], user: req.session.user, page_name: "drinks" }); } catch (err) { res.status(500).send("Server Error"); } });
 router.post("/admin/drink/edit/:id", async (req, res) => { /* ... logika ... */ await db.query("UPDATE drink SET name_drink = ?, qty_drink = ?, price_drink = ? WHERE id_drink = ?", [req.body.name_drink, req.body.qty_drink, req.body.price_drink, req.params.id]); res.redirect("/admin/drinks"); });
 router.post("/admin/drink/delete/:id", async (req, res) => { await db.query("DELETE FROM drink WHERE id_drink = ?", [req.params.id]); res.redirect("/admin/drinks"); });
+router.get("/admin/drink/export", async (req, res) => {
+    try {
+        const [drinks] = await db.query("SELECT * FROM drink");
 
+        if (drinks.length === 0) {
+            return res.status(404).send("Tidak ada data minuman untuk diekspor.");
+        }
+        
+        const headers = Object.keys(drinks[0]).join(',');
+        const rows = drinks.map(drink => {
+            return Object.values(drink).map(value => `"${String(value).replace(/"/g, '""')}"`).join(',');
+        }).join('\n');
+        
+        const csvContent = `${headers}\n${rows}`;
+
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename="laporan_minuman.csv"');
+        res.status(200).send(csvContent);
+
+    } catch (err) {
+        console.error("Gagal mengekspor data minuman:", err);
+        res.status(500).send("Server Error");
+    }
+});
 
 // --- CRUD UNTUK SUPPLIERS ---
 
@@ -167,6 +222,31 @@ router.get("/admin/supplier/edit/:id", async (req, res) => {
     } catch (err) {
         console.error("Error fetching supplier for edit:", err);
         res.status(500).send("Terjadi kesalahan pada server.");
+    }
+});
+
+router.get("/admin/supplier/export", async (req, res) => {
+    try {
+        const [suppliers] = await db.query("SELECT * FROM supplier");
+        
+        if (suppliers.length === 0) {
+            return res.status(404).send("Tidak ada data supplier untuk diekspor.");
+        }
+        
+        const headers = Object.keys(suppliers[0]).join(',');
+        const rows = suppliers.map(supplier => {
+            return Object.values(supplier).map(value => `"${String(value).replace(/"/g, '""')}"`).join(',');
+        }).join('\n');
+        
+        const csvContent = `${headers}\n${rows}`;
+
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename="laporan_supplier.csv"');
+        res.status(200).send(csvContent);
+
+    } catch (err) {
+        console.error("Gagal mengekspor data supplier:", err);
+        res.status(500).send("Server Error");
     }
 });
 

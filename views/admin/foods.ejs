@@ -1,7 +1,11 @@
 <%- include('../partials/_headerAdmin', { title: 'Manajemen Food', user: user, page_name: 'foods' }) %>
 
 <div class="section">
-    <h2>Manajemen Makanan <a href="/admin/food/add" class="btn btn-add">+ Tambah Makanan</a></h2>
+    <h2>Manajemen Makanan 
+    <a href="/admin/food/add" class="btn btn-add">+ Tambah Makanan</a>
+    <a href="/admin/food/export" class="btn btn-export">Export CSV</a>
+</h2>
+    
     <table>
         <table>
     <thead>

@@ -1,7 +1,10 @@
 <%- include('../partials/_headerAdmin', { title: 'Manajemen Supplier', user: user, page_name: 'suppliers' }) %>
 
 <div class="section">
-    <h2>Manajemen Supplier <a href="/admin/supplier/add" class="btn btn-add">+ Tambah Supplier</a></h2>
+    <h2>Manajemen Supplier 
+    <a href="/admin/supplier/add" class="btn btn-add">+ Tambah</a>
+    <a href="/admin/supplier/export" class="btn btn-export">Export CSV</a>
+</h2>
     <table>
         <thead>
         <tr>

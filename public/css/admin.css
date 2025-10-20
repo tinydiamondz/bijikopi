@@ -60,6 +60,10 @@ tr:hover {
 .btn-edit { background-color: #007bff; }
 .btn-delete { background-color: #dc3545; }
 
+/* ... style .btn-delete yang sudah ada ... */
+
+.btn-export { background-color: #17a2b8; } /* Warna teal/biru-hijau */
+
 /* Form Styling */
 form p {
     margin-bottom: 15px;
