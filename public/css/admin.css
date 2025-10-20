@@ -91,3 +91,16 @@ form a {
     color: #555;
     text-decoration: none;
 }
+
+/* Styling untuk tombol sort di header tabel */
+th a {
+    text-decoration: none;
+    color: #a0a0a0; /* Warna abu-abu */
+    margin-left: 4px;
+    font-size: 0.9em;
+    transition: color 0.2s;
+}
+
+th a:hover {
+    color: #000; /* Menjadi hitam saat disentuh mouse */
+}

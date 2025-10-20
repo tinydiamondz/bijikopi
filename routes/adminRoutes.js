@@ -17,19 +17,60 @@ router.get("/admin", (req, res) => {
 
 // Halaman Manajemen FOODS
 router.get("/admin/foods", async (req, res) => {
-    const [foods] = await db.query("SELECT * FROM food ORDER BY id_food DESC");
+    // 1. Daftar kolom yang diizinkan untuk di-sort & urutan yang diizinkan
+    const allowedSortColumns = ['id_food', 'name_food', 'qty_food', 'price_food'];
+    const allowedOrders = ['ASC', 'DESC'];
+
+    // 2. Ambil parameter dari URL, beri nilai default jika tidak ada
+    let sortBy = req.query.sort || 'id_food';
+    let order = (req.query.order || 'DESC').toUpperCase();
+
+    // 3. Validasi parameter agar aman dari SQL Injection
+    if (!allowedSortColumns.includes(sortBy)) {
+        sortBy = 'id_food'; // Kembali ke default jika kolom tidak valid
+    }
+    if (!allowedOrders.includes(order)) {
+        order = 'DESC'; // Kembali ke default jika urutan tidak valid
+    }
+
+    // 4. Buat query SQL dinamis dan ambil data
+    const sql = `SELECT * FROM food ORDER BY ${sortBy} ${order}`;
+    const [foods] = await db.query(sql);
+
     res.render("admin/foods", { foods, user: req.session.user, page_name: "foods" });
 });
 
 // Halaman Manajemen DRINKS
 router.get("/admin/drinks", async (req, res) => {
-    const [drinks] = await db.query("SELECT * FROM drink ORDER BY id_drink DESC");
+    const allowedSortColumns = ['id_drink', 'name_drink', 'qty_drink', 'price_drink'];
+    const allowedOrders = ['ASC', 'DESC'];
+    
+    let sortBy = req.query.sort || 'id_drink';
+    let order = (req.query.order || 'DESC').toUpperCase();
+
+    if (!allowedSortColumns.includes(sortBy)) sortBy = 'id_drink';
+    if (!allowedOrders.includes(order)) order = 'DESC';
+    
+    const sql = `SELECT * FROM drink ORDER BY ${sortBy} ${order}`;
+    const [drinks] = await db.query(sql);
+    
     res.render("admin/drinks", { drinks, user: req.session.user, page_name: "drinks" });
 });
 
 // Halaman Manajemen SUPPLIERS
 router.get("/admin/suppliers", async (req, res) => {
-    const [suppliers] = await db.query("SELECT * FROM supplier ORDER BY id_supplier DESC");
+    const allowedSortColumns = ['id_supplier', 'name_supplier', 'email_supplier'];
+    const allowedOrders = ['ASC', 'DESC'];
+
+    let sortBy = req.query.sort || 'id_supplier';
+    let order = (req.query.order || 'DESC').toUpperCase();
+
+    if (!allowedSortColumns.includes(sortBy)) sortBy = 'id_supplier';
+    if (!allowedOrders.includes(order)) order = 'DESC';
+
+    const sql = `SELECT * FROM supplier ORDER BY ${sortBy} ${order}`;
+    const [suppliers] = await db.query(sql);
+    
     res.render("admin/suppliers", { suppliers, user: req.session.user, page_name: "suppliers" });
 });
 
