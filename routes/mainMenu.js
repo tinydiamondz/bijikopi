@@ -461,12 +461,38 @@ router.post("/rating/submit", checkLogin, async (req, res) => {
                  VALUES ?`,
                 [ratingDetails]
             );
-
+            for (const c of items) {
+                if (c.id_food) {
+                    await db.query(
+                        `UPDATE food SET qty_food = qty_food - ? WHERE id_food = ?`,
+                        [c.qty_cart, c.id_food]
+                    );
+                } else if (c.id_drink) {
+                    await db.query(
+                        `UPDATE drink SET qty_drink = qty_drink - ? WHERE id_drink = ?`,
+                        [c.qty_cart, c.id_drink]
+                    );
+                }
+            }
             await db.query(`DELETE FROM cart WHERE id_cart IN (?)`, [cart_ids]);
             req.session.canRate = null;
             return res.json({ success: true });
         } else {
-            // SKIP: hapus cart tapi tidak insert rating
+// Kurangi stok berdasarkan cart
+            for (const c of items) {
+                if (c.id_food) {
+                    await db.query(
+                        `UPDATE food SET qty_food = qty_food - ? WHERE id_food = ?`,
+                        [c.qty_cart, c.id_food]
+                    );
+                } else if (c.id_drink) {
+                    await db.query(
+                        `UPDATE drink SET qty_drink = qty_drink - ? WHERE id_drink = ?`,
+                        [c.qty_cart, c.id_drink]
+                    );
+                }
+            }            
+            // SKIP: hapus cart tapi tidak insert rating  
             await db.query(`DELETE FROM cart WHERE id_cart IN (?)`, [cart_ids]);
             req.session.canRate = null;
             return res.json({ success: true });
