@@ -9,7 +9,7 @@
         <table>
     <thead>
         <tr>
-            <th>ID</th>
+            <!-- <th>ID</th> -->
             <th>
                 Nama 
                 <a href="/admin/foods?sort=name_food&order=asc">▲</a>
@@ -31,7 +31,7 @@
     <tbody>
             <% drinks.forEach(d => { %>
                 <tr>
-                    <td><%= d.id_drink %></td>
+                    <!-- <td><%= d.id_drink %></td> -->
                     <td><%= d.name_drink %></td>
                     <td><%= d.qty_drink %></td>
                     <td>Rp <%= d.price_drink.toLocaleString('id-ID') %></td>

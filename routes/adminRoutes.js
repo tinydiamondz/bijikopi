@@ -62,7 +62,7 @@ router.get("/admin/suppliers", async (req, res) => {
     const allowedSortColumns = ['id_supplier', 'name_supplier', 'email_supplier'];
     const allowedOrders = ['ASC', 'DESC'];
 
-    let sortBy = req.query.sort || 'id_supplier';
+    let sortBy = req.query.sort || 'id_supplier';   
     let order = (req.query.order || 'DESC').toUpperCase();
 
     if (!allowedSortColumns.includes(sortBy)) sortBy = 'id_supplier';
