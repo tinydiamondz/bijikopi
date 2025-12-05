@@ -10,7 +10,7 @@ router.get("/register", (req, res) => {
 
 // ===================== REGISTER =====================
 router.post("/register", async (req, res) => {
-    const { fullname, email, pnumber, username, password } = req.body;
+    const { fullname, email, pnumber, username, password, retypepassword } = req.body;
 
     try {
         // 1️⃣ Cek username/email
@@ -25,11 +25,17 @@ router.post("/register", async (req, res) => {
 
         if (results.length > 0) {
             return res.render("register", {
-                error: "Username atau Email sudah digunakan!",
+                error: "Username or email is already taken!",
                 success: null
             });
         }
 
+        if(retypepassword != password) {
+            return res.render("register", {
+                error: "Password doesn't matches!",
+                success: null
+            })
+        }
         // 2️⃣ Insert ke customer
         const sqlInsert = `
             INSERT INTO customer 
