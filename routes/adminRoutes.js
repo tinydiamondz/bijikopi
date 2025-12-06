@@ -23,14 +23,14 @@ router.get("/admin/foods", async (req, res) => {
 
     // 2. Ambil parameter dari URL, beri nilai default jika tidak ada
     let sortBy = req.query.sort || 'id_food';
-    let order = (req.query.order || 'DESC').toUpperCase();
+    let order = (req.query.order || 'ASC').toUpperCase();
 
     // 3. Validasi parameter agar aman dari SQL Injection
     if (!allowedSortColumns.includes(sortBy)) {
         sortBy = 'id_food'; // Kembali ke default jika kolom tidak valid
     }
     if (!allowedOrders.includes(order)) {
-        order = 'DESC'; // Kembali ke default jika urutan tidak valid
+        order = 'ASC'; // Kembali ke default jika urutan tidak valid
     }
 
     // 4. Buat query SQL dinamis dan ambil data
@@ -46,10 +46,10 @@ router.get("/admin/drinks", async (req, res) => {
     const allowedOrders = ['ASC', 'DESC'];
     
     let sortBy = req.query.sort || 'id_drink';
-    let order = (req.query.order || 'DESC').toUpperCase();
+    let order = (req.query.order || 'ASC').toUpperCase();
 
     if (!allowedSortColumns.includes(sortBy)) sortBy = 'id_drink';
-    if (!allowedOrders.includes(order)) order = 'DESC';
+    if (!allowedOrders.includes(order)) order = 'ASC';
     
     const sql = `SELECT * FROM drink ORDER BY ${sortBy} ${order}`;
     const [drinks] = await db.query(sql);
@@ -63,10 +63,10 @@ router.get("/admin/suppliers", async (req, res) => {
     const allowedOrders = ['ASC', 'DESC'];
 
     let sortBy = req.query.sort || 'id_supplier';   
-    let order = (req.query.order || 'DESC').toUpperCase();
+    let order = (req.query.order || 'ASC').toUpperCase();
 
     if (!allowedSortColumns.includes(sortBy)) sortBy = 'id_supplier';
-    if (!allowedOrders.includes(order)) order = 'DESC';
+    if (!allowedOrders.includes(order)) order = 'ASC';
 
     const sql = `SELECT * FROM supplier ORDER BY ${sortBy} ${order}`;
     const [suppliers] = await db.query(sql);
@@ -264,5 +264,6 @@ router.post("/admin/supplier/delete/:id", async (req, res) => {
     await db.query("DELETE FROM supplier WHERE id_supplier = ?", [id]);
     res.redirect("/admin/suppliers"); // Redirect ke halaman suppliers
 });
+
 
 module.exports = router;
