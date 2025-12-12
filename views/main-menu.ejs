@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/carousel.css"> 
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    
+
     <style>
         .voucher-container {
             margin: 20px auto;
@@ -41,6 +41,9 @@
             font-size: 0.9rem;
             opacity: 0.9;
         }
+        .voucher-right {
+            z-index: 2;
+        }
         .btn-claim {
             background-color: white;
             color: #8b5e3c;
@@ -55,12 +58,6 @@
         .btn-claim:hover {
             transform: scale(1.05);
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        .btn-claim:disabled {
-            background-color: #ccc;
-            color: #666;
-            cursor: not-allowed;
-            transform: none;
         }
         .claimed-badge {
             background: #28a745;
@@ -77,7 +74,6 @@
 </head>
 <body>
     
-
     <nav>
     <div class="nav-left">
         <span class="points-display">
@@ -123,41 +119,55 @@
         <p class="description">
             Di sini, aroma kopi segar menyapa setiap pengunjung begitu memasuki kafe. 
             Setiap cangkir dibuat dari biji kopi pilihan, disangrai dengan teliti, dan disajikan dengan penuh perhatian untuk memanjakan lidah Anda. 
+            Suasana nyaman dan hangat membuat Biji Kopi menjadi tempat ideal untuk bersantai, bekerja, atau sekadar menikmati waktu berkualitas.
+        </p>
+        <p class="description">
+            Nikmati beragam pilihan minuman dan camilan lezat. Mulai dari kopi klasik, specialty latte, hingga teh premium, semua disiapkan dengan standar kualitas tinggi. 
+            Camilan dan dessert ala kafe, dari roti hangat hingga kue-kue mewah, menemani setiap tegukan dan menambah kenikmatan pengalaman Anda.
+        </p>
+        <p class="description">
+            Biji Kopi bukan sekadar minuman—ini pengalaman. Dengan pelayanan ramah, cita rasa unik, dan atmosfer yang hangat, setiap kunjungan di Biji Kopi akan meninggalkan kenangan manis dan menghadirkan kebahagiaan yang sesungguhnya.
         </p>
     </div>
 
     <div class="quote-section">
         <p class="quote-text">
-            "Sebuah ide yang baik dimulai dengan secangkir kopi yang baik."
+            "Sebuah ide yang baik dimulai dengan secangkir kopi yang baik. Kopi yang baik adalah hasil dari biji yang seimbang"
         </p>
         <p class="quote-author">— FILOSOFI BIJI KOPI</p>
     </div>
 
     <div class="banner-grid">
         <div class="banner-item">
-            <img src="/images/main/gambar main (1).png" alt="Banner 1">
-            <div class="banner-overlay"><p>Nikmati Kopi Segar</p></div>
+            <img src="/images/main/gambar main (1).png" alt="Banner 1 - Nikmati Kopi Segar">
+            <div class="banner-overlay">
+                <p>Nikmati Kopi Segar</p>
+            </div>
         </div>
         <div class="banner-item">
-            <img src="/images/main/gambar main (5).png" alt="Banner 2">
-            <div class="banner-overlay"><p>Suasana Nyaman</p></div>
+            <img src="/images/main/gambar main (5).png" alt="Banner 2 - Suasana Nyaman di Biji Kopi">
+            <div class="banner-overlay">
+                <p>Suasana Nyaman</p>
+            </div>
         </div>
         <div class="banner-item">
-            <img src="/images/main/gambar main (4).png" alt="Banner 3">
-            <div class="banner-overlay"><p>Pilihan Menu Lezat</p></div>
+            <img src="/images/main/gambar main (4).png" alt="Banner 3 - Pilihan Menu Lezat">
+            <div class="banner-overlay">
+                <p>Pilihan Menu Lezat</p>
+            </div>
         </div>
     </div>
 
     <div class="special-offers-section">
         <h2>Ada apa aja di Biji Kopi?</h2>
 
-        <% if (isSaturday) { %>
+        <% if (typeof isSaturday !== 'undefined' && isSaturday) { %>
             <div class="voucher-container">
                 <div class="voucher-card">
                     <div class="voucher-left">
                         <h3>🎉 SATURDAY SPECIAL!</h3>
                         <p>Dapatkan Diskon 20% untuk semua menu.</p>
-                        <small style="font-size: 0.7rem; color: #eee;">*Berlaku untuk 1x transaksi hari ini</small>
+                        <small style="font-size: 0.7rem; color: #eee;">*Berlaku untuk semua transaksi hari ini</small>
                     </div>
                     <div class="voucher-right">
                         <% if (hasClaimed) { %>
@@ -173,6 +183,7 @@
                 </div>
             </div>
         <% } %>
+
         <div class="carousel-wrapper">
             <button class="carousel-btn prev-offer-btn">←</button>
             <div class="offers-carousel-container"> 
@@ -201,31 +212,53 @@
         <h2>Temukan Lokasi Kami</h2>
         <div class="location-info">
             <div class="location-card">
-                <h4>BIJI KOPI - Tangerang</h4>
-                <p>Bez Plaza, Gading Serpong, Tangerang.</p>
+                <h4>BIJI KOPI - Tangerang, Gading serpong</h4>
+                <p>Bez Plaza, Jalan Boulevard Raya Gading Serpong, Tangerang, 15810.</p>
+                <p>Jam Operasional: 07.00 - 22.00</p>
             </div>
             <div class="location-card">
-                <h4>BIJI KOPI - Bandung</h4>
-                <p>Jl. Cihampelas No. 50, Bandung.</p>
+                <h4>BIJI KOPI - BANDUNG CIHAMPELAS</h4>
+                <p>Jl. Cihampelas No. 50, Bandung, 40116</p>
+                <p>Jam Operasional: 08.00 - 23.00</p>
             </div>
             <div class="location-card">
-                <h4>BIJI KOPI - Jakarta</h4>
-                <p>Kuningan, Jakarta Selatan.</p>
+                <h4>BIJI KOPI - JAKARTA SELATAN</h4>
+                <p>Jl. Jalan Dr. Sahardjo, Kuningan, 1250.</p>
+                <p>Jam Operasional: 08.00 - 23.00</p>
             </div>
             <div class="location-card">
-                <h4>BIJI KOPI - Bekasi</h4>
-                <p>Galaxy, Bekasi.</p>
+                <h4>BIJI KOPI - GALAXY BEKASI </h4>
+                <p>Jl. Galaxy No. 34, Galaxy, Bekasi 12345</p>
+                <p>Jam Operasional: 08.00 - 23.00</p>
             </div>
         </div>
     </div>
 
     <div class="contact-info-bar">
-        <p class="curhat-text">Curhat Yuk <span>081-296-418-855</span> WhatsApp Chat Only</p>
+        <p class="curhat-text">
+            Curhat Yuk 
+            <span class="phone-number">081-296-418-855</span>
+            <img src="/images/main/wa.png" class="wa-icon" alt="WhatsApp Icon">
+            WhatsApp Chat Only
+        </p>
+
+        <p class="complaint-header">
+            Consumer Complaints Service Contact Information
+        </p>
+        <p class="pkdn-info">
+            Directorate General of Consumer Protection and Trade Compliance, Ministry of Trade of the Republic of Indonesia
+        </p>
+        <p class="pkdn-wa">
+            Whatsapp Ditjen PKTN: <span class="phone-number">0853-1111-1010</span>
+        </p>
     </div>
     
-    <footer>© 2025 Biji Kopi — Crafted with Biji</footer>
+    <footer>
+        © 2025 Biji Kopi — Crafted with Biji
+    </footer>
 
     <script>
+        // --- LOGIKA CAROUSEL PENAWARAN SPESIAL BARU (DENGAN TOMBOL) ---
         const offersContainer = document.querySelector('.offers-carousel-container');
         const offerSlides = document.querySelectorAll('.offers-carousel-container .carousel-slide');
         const prevOfferBtn = document.querySelector('.prev-offer-btn');
@@ -233,36 +266,91 @@
 
         if (offersContainer && offerSlides.length > 0) {
             let currentOfferSlide = 0;
+
             function getSlideWidth() {
                 if (offerSlides.length === 0) return 0;
-                return offerSlides[0].offsetWidth + 20; 
+                const slideWidth = offerSlides[0].offsetWidth;
+                const gap = 20;
+                return slideWidth + gap;
             }
+
             function showOfferSlide(index) {
-                if (index >= offerSlides.length - 1) currentOfferSlide = 0;
-                else if (index < 0) {
+                if (index >= offerSlides.length - 1) { 
+                    currentOfferSlide = 0;
+                } else if (index < 0) {
                     const visibleItems = Math.floor(offersContainer.offsetWidth / getSlideWidth());
                     currentOfferSlide = offersContainer.children.length - visibleItems;
-                } else currentOfferSlide = index;
-                offersContainer.scrollTo({ left: currentOfferSlide * getSlideWidth(), behavior: 'smooth' });
+                } else {
+                    currentOfferSlide = index;
+                }
+
+                const offset = currentOfferSlide * getSlideWidth();
+                offersContainer.scrollTo({
+                    left: offset,
+                    behavior: 'smooth'
+                });
             }
-            nextOfferBtn.addEventListener('click', () => showOfferSlide(currentOfferSlide + 1));
-            prevOfferBtn.addEventListener('click', () => showOfferSlide(currentOfferSlide - 1));
-            window.addEventListener('resize', () => showOfferSlide(currentOfferSlide));
+
+            nextOfferBtn.addEventListener('click', () => {
+                showOfferSlide(currentOfferSlide + 1);
+            });
+            
+            prevOfferBtn.addEventListener('click', () => {
+                showOfferSlide(currentOfferSlide - 1);
+            });
+
+            window.addEventListener('resize', () => {
+                showOfferSlide(currentOfferSlide);
+            });
+
+            showOfferSlide(currentOfferSlide);
         }
     </script>
 
+    
     <script>
         document.querySelectorAll('.ripple-navbar a').forEach(link => {
-            link.addEventListener('mouseenter', e => {
-                const ripple = document.createElement('span');
-                ripple.classList.add('ripple');
-                link.appendChild(ripple);
-                const rect = link.getBoundingClientRect();
-                ripple.style.left = `${e.clientX - rect.left}px`;
-                ripple.style.top = `${e.clientY - rect.top}px`;
-                setTimeout(() => ripple.remove(), 700);
-            });
+          link.addEventListener('mouseenter', e => {
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            link.appendChild(ripple);
+
+            const rect = link.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+
+            setTimeout(() => ripple.remove(), 700);
+          });
         });
+    </script>
+
+    <script>
+        const discountBox = document.getElementById('discountBox');
+        const popupOverlay = document.getElementById('popupOverlay');
+        const popupCloseBtn = document.getElementById('popupCloseBtn');
+
+        if (discountBox) {
+            discountBox.addEventListener('click', () => {
+                popupOverlay.style.display = 'flex';
+            });
+        }
+
+        if (popupCloseBtn) {
+            popupCloseBtn.addEventListener('click', () => {
+                popupOverlay.style.display = 'none';
+            });
+        }
+
+        if (popupOverlay) {
+            popupOverlay.addEventListener('click', (e) => {
+                if(e.target === popupOverlay){
+                    popupOverlay.style.display = 'none';
+                }
+            });
+        }
     </script>
 
     <script>
@@ -276,7 +364,6 @@
 
                 if (result.success) {
                     alert("🎉 Selamat! Voucher berhasil diklaim. Diskon 20% akan otomatis terpasang di keranjang.");
-                    // Reload halaman agar tombol berubah jadi "Voucher Aktif"
                     window.location.reload();
                 } else {
                     alert("Gagal klaim: " + result.message);
