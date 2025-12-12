@@ -3,7 +3,6 @@ const router = express.Router();
 const db = require("../connect");
 const { isAdmin } = require("../middleware/authMiddleware");
 
-// Terapkan middleware 'isAdmin' ke semua rute di file ini.
 router.use("/admin", isAdmin);
 
 // == HALAMAN UTAMA (FOODS, DRINKS, SUPPLIERS)
@@ -13,7 +12,7 @@ router.get("/admin", (req, res) => {
     res.redirect("/admin/foods");
 });
 
-// --- 1. MANAJEMEN FOODS (Search + Sort) ---
+//1. MANAJEMEN FOODS (Search + Sort)
 router.get("/admin/foods", async (req, res) => {
     try {
         const allowedSortColumns = ['id_food', 'name_food', 'qty_food', 'price_food'];
@@ -39,7 +38,7 @@ router.get("/admin/foods", async (req, res) => {
         const [foods] = await db.query(sql, queryParams);
 
         res.render("admin/foods", { 
-            title: "Manage Foods", // <--- PERBAIKAN: Menambahkan title
+            title: "Manage Foods", 
             foods, 
             data: foods, 
             user: req.session.user, 
@@ -53,7 +52,7 @@ router.get("/admin/foods", async (req, res) => {
     }
 });
 
-// --- 2. MANAJEMEN DRINKS (Search + Sort) ---
+//2. MANAJEMEN DRINKS (Search + Sort)
 router.get("/admin/drinks", async (req, res) => {
     try {
         const allowedSortColumns = ['id_drink', 'name_drink', 'qty_drink', 'price_drink'];
@@ -79,7 +78,7 @@ router.get("/admin/drinks", async (req, res) => {
         const [drinks] = await db.query(sql, queryParams);
         
         res.render("admin/drinks", { 
-            title: "Manage Drinks", // <--- PERBAIKAN: Menambahkan title
+            title: "Manage Drinks",
             drinks, 
             data: drinks,
             user: req.session.user, 
@@ -93,7 +92,7 @@ router.get("/admin/drinks", async (req, res) => {
     }
 });
 
-// --- 3. MANAJEMEN SUPPLIERS (Search + Sort) ---
+//3. MANAJEMEN SUPPLIERS (Search + Sort)
 router.get("/admin/suppliers", async (req, res) => {
     try {
         const allowedSortColumns = ['id_supplier', 'name_supplier', 'email_supplier'];
@@ -119,7 +118,7 @@ router.get("/admin/suppliers", async (req, res) => {
         const [suppliers] = await db.query(sql, queryParams);
         
         res.render("admin/suppliers", { 
-            title: "Manage Suppliers", // <--- PERBAIKAN: Menambahkan title
+            title: "Manage Suppliers",
             suppliers, 
             data: suppliers,
             user: req.session.user, 
@@ -134,9 +133,10 @@ router.get("/admin/suppliers", async (req, res) => {
 });
 
 
+
 // == SEMUA PROSES CRUD (Create, Update, Delete, Export)
 
-// CRUD FOODS 
+//CRUD FOODS
 router.get("/admin/food/add", (req, res) => {
     res.render("admin/add_food", { 
         title: "Tambah Makanan",
@@ -192,7 +192,7 @@ router.get("/admin/food/export", async (req, res) => {
     } catch (err) { res.status(500).send("Server Error"); }
 });
 
-// CRUD DRINKS
+//CRUD DRINKS
 router.get("/admin/drink/add", (req, res) => 
     res.render("admin/add_drink", { 
         title: "Tambah Minuman",
@@ -246,7 +246,7 @@ router.get("/admin/drink/export", async (req, res) => {
     } catch (err) { res.status(500).send("Server Error"); }
 });
 
-// CRUD SUPPLIERS
+// CRUD SUPPLIERS 
 router.get("/admin/supplier/add", (req, res) => {
     res.render("admin/add_supplier", { 
         title: "Tambah Supplier", 
@@ -303,29 +303,22 @@ router.get("/admin/supplier/export", async (req, res) => {
 });
 
 
-// == LAPORAN PENJUALAN (SALES REPORT) - ULTIMATE
-
+// == LAPORAN PENJUALAN (SALES REPORT) - VERSI TEXT MANUAL
 router.get('/admin/sales', async (req, res) => {
     try {
         // 1. Total Semua Pendapatan
         const queryTotal = "SELECT SUM(Total_transaction) AS grand_total FROM transaction";
         const [resultTotal] = await db.query(queryTotal);
 
-        // 2. Rincian Per Item (Menggunakan LEFT JOIN + COALESCE)
+        // 2. Rincian Per Item (Menggunakan Group By Nama Teks)
+        // Kita gunakan TRIM() dan UPPER() agar "Kopi" dan "kopi " terhitung sama
         const queryDetails = `
             SELECT 
-                COALESCE(f.name_food, d.name_drink, t.menu_transaction) AS item_name,
-                SUM(t.qty_transaction) as total_qty, 
-                SUM(t.Total_transaction) as total_revenue 
-            FROM transaction t
-            LEFT JOIN food f ON t.id_food = f.id_food
-            LEFT JOIN drink d ON t.id_drink = d.id_drink
-            GROUP BY 
-                CASE 
-                    WHEN t.id_food IS NOT NULL THEN CONCAT('food_', t.id_food)
-                    WHEN t.id_drink IS NOT NULL THEN CONCAT('drink_', t.id_drink)
-                    ELSE t.menu_transaction
-                END
+                TRIM(UPPER(menu_transaction)) AS item_name, 
+                SUM(qty_transaction) as total_qty, 
+                SUM(Total_transaction) as total_revenue 
+            FROM transaction 
+            GROUP BY TRIM(UPPER(menu_transaction)) 
             ORDER BY total_qty DESC
         `;
         
