@@ -10,7 +10,7 @@
 <div class="container">
     <h2>Konfirmasi Pembayaran</h2>
 
-    <form method="POST" action="/confirm">
+    <form method="POST" action="/confirm" id="paymentForm">
         <table>
             <thead>
                 <tr>
@@ -22,19 +22,16 @@
             </thead>
             <tbody>
                 <% let originalTotal = 0; %>
-                
-                <% items.forEach(item => { %>
-                    <% 
+                <% items.forEach(item => { 
                        let subtotal = item.total_cart; 
                        originalTotal += subtotal; 
-                    %>
+                %>
                     <tr>
                         <td><%= item.name_cart %></td>
                         <td><%= item.qty_cart %></td>
                         <td>Rp <%= (item.total_cart / item.qty_cart).toLocaleString('id-ID') %></td>
                         <td>Rp <%= subtotal.toLocaleString('id-ID') %></td>
                     </tr>
-                    
                     <input type="hidden" name="selected[]" value="<%= item.id_cart %>">
                 <% }) %>
             </tbody>
@@ -42,6 +39,25 @@
 
         <div class="summary-box" style="margin-top: 20px; text-align: right; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
             
+            <% if (point >= 50) { %>
+                <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+                    <label style="cursor: pointer; background: #fff3cd; padding: 10px 15px; border-radius: 8px; border: 1px solid #ffeeba; display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" name="use_points" id="usePointsCheck" value="true" style="width: 18px; height: 18px;">
+                        <div style="text-align: left;">
+                            <span style="font-weight: bold; color: #856404;">Tukar 50 Poin (Diskon 50%)</span>
+                            <br>
+                            <span style="font-size: 0.8em; color: #666;">Saldo Poin Anda: <%= point %></span>
+                        </div>
+                    </label>
+                </div>
+            <% } else { %>
+                <div style="margin-bottom: 20px; color: #999; font-size: 0.9em;">
+                    🔒 Poin tidak cukup untuk diskon 50% (Butuh 50 Poin). Saldo: <%= point %>
+                </div>
+            <% } %>
+
+            <hr style="margin: 10px 0; opacity: 0.3;">
+
             <div class="row">
                 <span style="color: #666;">Subtotal:</span>
                 <strong>Rp <%= originalTotal.toLocaleString('id-ID') %></strong>
@@ -49,15 +65,23 @@
 
             <% if (transaction.discount_amount && transaction.discount_amount > 0) { %>
                 <div class="row" style="color: green; margin: 5px 0;">
-                    <span>Potongan Voucher Sabtu (20%):</span>
+                    <span>Voucher Sabtu (20%):</span>
                     <strong>- Rp <%= transaction.discount_amount.toLocaleString('id-ID') %></strong>
                 </div>
-                <hr style="margin: 10px 0; opacity: 0.3;">
             <% } %>
+
+            <div class="row" id="pointDiscountRow" style="display: none; color: #d35400; margin: 5px 0;">
+                <span>Diskon Poin (50%):</span>
+                <strong id="pointDiscountAmount">- Rp 0</strong>
+            </div>
+
+            <hr style="margin: 10px 0; opacity: 0.3;">
 
             <div class="row total" style="font-size: 1.5rem; margin-top: 10px; color: #333;">
                 <strong>Total Pembayaran:</strong> 
-                <span style="color: #d4a373;">Rp <%= transaction.total_transaction.toLocaleString('id-ID') %></span>
+                <span id="finalTotalDisplay" style="color: #d4a373;">
+                    Rp <%= transaction.total_transaction.toLocaleString('id-ID') %>
+                </span>
             </div>
 
         </div>
@@ -79,5 +103,47 @@
     </form>
     
 </div>
+
+<script>
+    const checkbox = document.getElementById('usePointsCheck');
+    const pointDiscountRow = document.getElementById('pointDiscountRow');
+    const pointDiscountAmount = document.getElementById('pointDiscountAmount');
+    const finalTotalDisplay = document.getElementById('finalTotalDisplay');
+
+    // Ambil harga yang sudah diproses backend (mungkin sudah kena diskon Voucher Sabtu)
+    // Kita gunakan ini sebagai dasar perhitungan diskon Poin
+    const currentTotal = <%= transaction.total_transaction %>; 
+
+    if (checkbox) {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                // Konfirmasi User
+                const yakin = confirm("Yakin ingin menukar 50 Poin untuk tambahan diskon 50%?");
+                
+                if (yakin) {
+                    // Hitung Diskon 50% dari harga saat ini
+                    const discount = currentTotal * 0.5;
+                    const finalPrice = currentTotal - discount;
+
+                    // Update Tampilan
+                    pointDiscountRow.style.display = 'flex';
+                    pointDiscountRow.style.justifyContent = 'space-between'; // Biar rapi kanan-kiri
+                    pointDiscountAmount.textContent = "- Rp " + discount.toLocaleString('id-ID');
+                    
+                    finalTotalDisplay.textContent = "Rp " + finalPrice.toLocaleString('id-ID');
+                    finalTotalDisplay.style.color = "green"; // Ubah warna jadi hijau biar ngeh
+                } else {
+                    this.checked = false; // Batal centang
+                }
+            } else {
+                // Jika di-uncheck, kembalikan ke harga semula
+                pointDiscountRow.style.display = 'none';
+                finalTotalDisplay.textContent = "Rp " + currentTotal.toLocaleString('id-ID');
+                finalTotalDisplay.style.color = "#d4a373"; // Warna asli
+            }
+        });
+    }
+</script>
+
 </body>
 </html>
