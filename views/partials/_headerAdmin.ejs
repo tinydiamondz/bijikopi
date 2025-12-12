@@ -5,26 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %> - Admin Biji Kopi</title>
     
-    <link rel="stylesheet" href="/css/foods.css"> <link rel="stylesheet" href="/css/admin.css"> 
+    <link rel="stylesheet" href="/css/foods.css">
+    <link rel="stylesheet" href="/css/admin.css">
     
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <nav>
-    <div class="nav-center">
-      <a href="/admin/foods" class="<%= page_name === 'foods' ? 'active' : '' %>">FOODS</a>
-      <a href="/admin/drinks" class="<%= page_name === 'drinks' ? 'active' : '' %>">DRINKS</a>
-      <a href="/admin/suppliers" class="<%= page_name === 'suppliers' ? 'active' : '' %>">SUPPLIERS</a>
-      <a href="/">KEMBALI KE SITUS</a>
+
+  <nav class="navbar">
+    <div class="nav-brand">
+      <a href="/">ADMIN Biji KOPI</a>
     </div>
-    <div class="nav-right">
-      <% if (user) { %>
-        <span class="logged-as">LOGGED AS <%= user.fullname_admin %></span>
-        <a href="/logout" class="login-btn">LOGOUT</a>
-      <% } else { %>
-        <a href="/login" class="login-btn">LOGIN</a>
-      <% } %>
+
+    <button class="hamburger" id="hamburger">
+      <i class="fas fa-bars"></i> </button>
+
+    <div class="nav-menu" id="nav-menu">
+      <div class="nav-links">
+        <a href="/admin/foods" class="<%= page_name === 'foods' ? 'active' : '' %>">FOODS</a>
+        <a href="/admin/drinks" class="<%= page_name === 'drinks' ? 'active' : '' %>">DRINKS</a>
+        <a href="/admin/suppliers" class="<%= page_name === 'suppliers' ? 'active' : '' %>">SUPPLIERS</a>
+        <a href="/admin/sales" class="<%= page_name === 'sales' ? 'active' : '' %>">Sales</a>
+        <a href="/" class="site-link">KEMBALI KE SITUS</a>
+      </div>
+
+      <div class="nav-user">
+        <% if (user) { %>
+          <span class="logged-as">Hi, <%= user.fullname_admin %></span>
+          <a href="/logout" class="btn-logout">LOGOUT</a>
+        <% } else { %>
+          <a href="/login" class="btn-login">LOGIN</a>
+        <% } %>
+      </div>
     </div>
   </nav>
+
   <main class="container">
+
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('nav-menu');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      navMenu.classList.toggle('active');
+    });
+  </script>
