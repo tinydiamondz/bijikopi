@@ -1,50 +1,56 @@
-<%- include('../partials/_headerAdmin', { title: 'Manajemen Drink', user: user, page_name: 'drinks' }) %>
+<%- include('../partials/_headerAdmin') %>
 
-<div class="section">
-    <h2>Manajemen Minuman 
-    <a href="/admin/drink/add" class="btn btn-add">+ Tambah</a>
-    <a href="/admin/drink/export" class="btn btn-export">Export CSV</a>
-</h2>
-    <table>
+    <h1>Manage Drinks</h1>
+
+    <div class="header-actions">
+        <a href="/admin/drink/add" class="btn btn-add">+ Tambah Minuman</a>
+
+        <form action="/admin/drinks" method="GET" class="search-form">
+            <input type="text" name="search" class="search-input" 
+                   placeholder="Cari nama, stok, atau harga..." 
+                   value="<%= search %>">
+            <button type="submit" class="btn-search">Cari</button>
+            <% if(search) { %>
+                <a href="/admin/drinks" class="btn" style="background:#666; padding: 8px 15px;">Reset</a>
+            <% } %>
+        </form>
+
+        <a href="/admin/drink/export" class="btn btn-export">Export CSV</a>
+    </div>
+
+    <div style="overflow-x: auto;">
         <table>
-    <thead>
-        <tr>
-            <!-- <th>ID</th> -->
-            <th>
-                Nama 
-                <a href="/admin/foods?sort=name_food&order=asc">▲</a>
-                <a href="/admin/foods?sort=name_food&order=desc">▼</a>
-            </th>
-            <th>
-                Stok
-                <a href="/admin/foods?sort=qty_food&order=asc">▲</a>
-                <a href="/admin/foods?sort=qty_food&order=desc">▼</a>
-            </th>
-            <th>
-                Harga
-                <a href="/admin/foods?sort=price_food&order=asc">▲</a>
-                <a href="/admin/foods?sort=price_food&order=desc">▼</a>
-            </th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-            <% drinks.forEach(d => { %>
+            <thead>
                 <tr>
-                    <!-- <td><%= d.id_drink %></td> -->
-                    <td><%= d.name_drink %></td>
-                    <td><%= d.qty_drink %></td>
-                    <td>Rp <%= d.price_drink.toLocaleString('id-ID') %></td>
-                    <td class="actions">
-                        <a href="/admin/drink/edit/<%= d.id_drink %>" class="btn btn-edit">Edit</a>
-                        <form action="/admin/drink/delete/<%= d.id_drink %>" method="POST" onsubmit="return confirm('Yakin?');" style="display:inline;">
-                            <button type="submit" class="btn btn-delete">Hapus</button>
-                        </form>
-                    </td>
+                    <th>Nama Minuman</th>
+                    <th>Stok</th>
+                    <th>Harga</th>
+                    <th>Manage</th>
                 </tr>
-            <% }) %>
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                <% if(data.length > 0) { %>
+                    <% data.forEach((item, index) => { %>
+                    <tr>
+                        <td><%= item.name_drink %></td>
+                        <td><%= item.qty_drink %></td>
+                        <td>Rp <%= new Intl.NumberFormat('id-ID').format(item.price_drink) %></td>
+                        <td class="actions">
+                            <a href="/admin/drink/edit/<%= item.id_drink %>" class="btn btn-edit">Edit</a>
+                            
+                            <form action="/admin/drink/delete/<%= item.id_drink %>" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-delete" onclick="return confirm('Yakin hapus?');">Hapus</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6" style="text-align:center;">Data tidak ditemukan.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
 
 <%- include('../partials/_footerAdmin') %>
