@@ -5,156 +5,185 @@ body {
   color: #3e2f1c;
   margin: 0;
   padding: 0;
-  overflow-y: scroll; /* pastikan selalu ada scrollbar */
-  scrollbar-gutter: stable; /* konten tidak bergeser saat scrollbar muncul */
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
 }
 
 /* ===== CUSTOM SCROLLBAR ===== */
 body::-webkit-scrollbar {
-  width: 10px; /* lebar scrollbar */
+  width: 10px;
 }
-
 body::-webkit-scrollbar-track {
-  background: rgba(0,0,0,0.05); /* track tipis dan transparan */
+  background: rgba(0,0,0,0.05);
   border-radius: 10px;
 }
-
 body::-webkit-scrollbar-thumb {
-  background: rgba(255, 152, 0, 0.5); /* warna modern */
+  background: rgba(255, 152, 0, 0.5);
   border-radius: 10px;
   transition: background 0.3s ease;
 }
-
 body::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 152, 0, 0.8);
 }
 
-/* ===== NAVBAR DENGAN EFEK RIPPLE AIR ===== */
+/* ===== NAVBAR ===== */
 nav {
-    padding: 12px 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 9999; /* pastikan selalu di atas konten & scrollbar */
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(8px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 0 0 16px 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
 }
 
-/* Tengah */
+/* ===== NAV LEFT ===== */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-width: 120px;
+}
+
+.points-display,
+.date-display {
+  background: #f0d58c;
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #5a3e1b;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  white-space: nowrap;
+}
+
+/* ===== NAV CENTER ===== */
 .nav-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 28px;
-    position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex: 2 1 auto;
+  flex-wrap: wrap;
+  text-align: center;
 }
 
 .nav-center a {
-    color: #fbe9e7;
-    text-decoration: none;
-    font-weight: 600;
-    font-family: 'Cinzel', serif;
-    letter-spacing: 0.5px;
-    position: relative;
-    overflow: hidden;
+  position: relative;
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 8px;
+  color: #fbe9e7;
+  text-decoration: none;
+  font-weight: 600;
+  font-family: 'Cinzel', serif;
+  overflow: hidden;
+  transition: color 0.3s ease;
 }
 
-/* Efek ripple */
-.nav-center a::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 0;
-    height: 0;
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width 0.5s ease, height 0.5s ease, opacity 0.5s ease;
-    opacity: 0;
+/* Liquid glass sliding effect */
+.nav-center a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px) saturate(180%);
+  transition: transform 0.5s ease;
+  transform: translateX(0);
+  z-index: -1;
+  border-radius: 8px;
 }
 
-.nav-center a:hover::after {
-    width: 300%;
-    height: 300%;
-    opacity: 0;
-    animation: ripple-expand 0.7s ease-out forwards;
+/* Hover slide */
+.nav-center a:hover::before {
+  transform: translateX(100%);
 }
 
-@keyframes ripple-expand {
-    0% {
-        opacity: 0.5;
-        transform: translate(-50%, -50%) scale(0);
-        backdrop-filter: blur(0px);
-    }
-    50% {
-        opacity: 0.3;
-        transform: translate(-50%, -50%) scale(1.5);
-        backdrop-filter: blur(6px);
-    }
-    100% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(3);
-        backdrop-filter: blur(10px);
-    }
+/* Active page slide */
+.nav-center a.active::before {
+  transform: translateX(100%);
 }
 
-.nav-center a:hover {
-    color: #ffcc80;
+/* Text color change */
+.nav-center a:hover,
+.nav-center a.active {
+  color: #ffcc80;
 }
 
-/* Kanan */
+/* ===== NAV RIGHT ===== */
 .nav-right {
-    position: absolute;
-    right: 40px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  min-width: 120px;
 }
 
 .nav-right .logged-as {
-    font-size: 13px;
-    color: #ffe0b2;
-}
-
-/* Kiri */
-.nav-left {
-    position: absolute;
-    left: 40px;
-    display: flex;
-    align-items: center;
+  font-size: 13px;
+  color: #ffe0b2;
 }
 
 .login-btn {
-    color: #fbe9e7;
-    background-color: #6d4c41;
-    padding: 5px 10px;
-    border-radius: 6px;
-    font-size: 13px;
-    text-decoration: none;
-    transition: all 0.2s;
+  color: #fbe9e7;
+  background-color: #6d4c41;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  text-decoration: none;
+  transition: all 0.2s;
 }
 
 .login-btn:hover {
-    background-color: #8d6e63;
-    color: #fff3e0;
+  background-color: #8d6e63;
+  color: #fff3e0;
 }
 
-.points-display {
-    margin-right: 15px;
-    background: #f0d58c;
-    padding: 5px 12px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 14px;
-    color: #5a3e1b;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+/* ===== RESPONSIVE ===== */
+@media screen and (max-width: 900px) {
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px 16px;
+  }
+
+  .nav-left, .nav-right, .nav-center {
+    flex: 1 1 100%;
+    justify-content: flex-start;
+  }
+
+  .nav-center {
+    gap: 12px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .points-display,
+  .date-display {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  .nav-center a {
+    font-size: 12px;
+    padding: 2px 4px;
+  }
+
+  .nav-right .logged-as {
+    font-size: 11px;
+  }
 }

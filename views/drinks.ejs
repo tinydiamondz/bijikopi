@@ -50,22 +50,14 @@
 
     <!-- TENGAH -->
     <div class="nav-center">
-        <a href="/">MAIN</a>
-        <a href="/foods">FOODS</a>
-        <a href="/drinks">DRINKS</a>
-
-        <% if (role === "customer") { %>
-            <a href="/cart">CART</a>
-            <a href="/transactions" class="active">HISTORY</a>
-        <% } %>
-
-        <% if (role === "admin") { %>
-            <a href="/admin/foods">ADMIN ONLY</a>
-        <% } %>
-
-        <a href="/forum">FORUM</a>
+      <a href="/" class="<%= page === 'main' ? 'active' : '' %>">MAIN</a>
+      <a href="/foods" class="<%= page === 'foods' ? 'active' : '' %>">FOODS</a>
+      <a href="/drinks" class="<%= page === 'drinks' ? 'active' : '' %>">DRINKS</a>
+      <a href="/cart" class="<%= page === 'cart' ? 'active' : '' %>">CART</a>
+      <a href="/transactions" class="<%= page === 'history' ? 'active' : '' %>">HISTORY</a>
+      <a href="/forum" class="<%= page === 'forum' ? 'active' : '' %>">FORUM</a>
     </div>
-
+    
     <!-- KANAN -->
     <div class="nav-right">
         <span class="logged-as">
