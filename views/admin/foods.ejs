@@ -1,51 +1,67 @@
-<%- include('../partials/_headerAdmin', { title: 'Manajemen Food', user: user, page_name: 'foods' }) %>
+<%- include('../partials/_headerAdmin') %>
 
-<div class="section">
-    <h2>Manajemen Makanan 
-    <a href="/admin/food/add" class="btn btn-add">+ Tambah Makanan</a>
-    <a href="/admin/food/export" class="btn btn-export">Export CSV</a>
-</h2>
-    
-    <table>
+    <h1>Manage Foods</h1>
+
+    <div class="header-actions">
+        <a href="/admin/food/add" class="btn btn-add">+ Tambah Makanan</a>
+
+        <form action="/admin/foods" method="GET" class="search-form">
+            <input type="text" name="search" class="search-input" 
+                   placeholder="Cari nama, stok, atau harga..." 
+                   value="<%= search %>"> <button type="submit" class="btn-search">Cari</button>
+            <% if(search) { %>
+                <a href="/admin/foods" class="btn" style="background:#666; padding: 8px 15px;">Reset</a>
+            <% } %>
+        </form>
+        
+        <a href="/admin/food/export" class="btn btn-export">Export CSV</a>
+    </div>
+
+    <div style="overflow-x: auto;">
         <table>
-    <thead>
-        <tr>
-            <!-- <th>ID</th> -->
-            <th>
-                Nama 
-                <a href="/admin/foods?sort=name_food&order=asc">▲</a>
-                <a href="/admin/foods?sort=name_food&order=desc">▼</a>
-            </th>
-            <th>
-                Stok
-                <a href="/admin/foods?sort=qty_food&order=asc">▲</a>
-                <a href="/admin/foods?sort=qty_food&order=desc">▼</a>
-            </th>
-            <th>
-                Harga
-                <a href="/admin/foods?sort=price_food&order=asc">▲</a>
-                <a href="/admin/foods?sort=price_food&order=desc">▼</a>
-            </th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-            <% foods.forEach(f => { %>
+            <thead>
                 <tr>
-                    <!-- <td><%= f.id_food %></td> -->
-                    <td><%= f.name_food %></td>
-                    <td><%= f.qty_food %></td>
-                    <td>Rp <%= f.price_food.toLocaleString('id-ID') %></td>
-                    <td class="actions">
-                        <a href="/admin/food/edit/<%= f.id_food %>" class="btn btn-edit">Edit</a>
-                        <form action="/admin/food/delete/<%= f.id_food %>" method="POST" onsubmit="return confirm('Yakin?');" style="display:inline;">
-                            <button type="submit" class="btn btn-delete">Hapus</button>
-                        </form>
-                    </td>
+                    <th>
+                        Nama Makanan 
+                        <a href="?sort=name_food&order=ASC">▲</a>
+                        <a href="?sort=name_food&order=DESC">▼</a>
+                    </th>
+                    <th>
+                        Stok 
+                        <a href="?sort=qty_food&order=ASC">▲</a>
+                        <a href="?sort=qty_food&order=DESC">▼</a>
+                    </th>
+                    <th>
+                        Harga 
+                        <a href="?sort=price_food&order=ASC">▲</a>
+                        <a href="?sort=price_food&order=DESC">▼</a>
+                    </th>
+                    <th>Manage</th>
                 </tr>
-            <% }) %>
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                <% if(data.length > 0) { %>
+                    <% data.forEach((item, index) => { %>
+                    <tr>
+                        <td><%= item.name_food %></td>
+                        <td><%= item.qty_food %></td>
+                        <td>Rp <%= new Intl.NumberFormat('id-ID').format(item.price_food) %></td>
+                        <td class="actions">
+                            <a href="/admin/food/edit/<%= item.id_food %>" class="btn btn-edit">Edit</a>
+                            
+                            <form action="/admin/food/delete/<%= item.id_food %>" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-delete" onclick="return confirm('Yakin hapus?');">Hapus</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6" style="text-align:center;">Data tidak ditemukan.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
 
 <%- include('../partials/_footerAdmin') %>
