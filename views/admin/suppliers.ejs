@@ -1,48 +1,60 @@
-<%- include('../partials/_headerAdmin', { title: 'Manajemen Supplier', user: user, page_name: 'suppliers' }) %>
+<%- include('../partials/_headerAdmin') %>
 
-<div class="section">
-    <h2>Manajemen Supplier 
-    <a href="/admin/supplier/add" class="btn btn-add">+ Tambah</a>
-    <a href="/admin/supplier/export" class="btn btn-export">Export CSV</a>
-</h2>
-    <table>
-        <thead>
-        <tr>
-            <!-- <th>ID</th> -->
-            <th>
-                Nama
-                <a href="/admin/suppliers?sort=name_supplier&order=asc">▲</a>
-                <a href="/admin/suppliers?sort=name_supplier&order=desc">▼</a>
-            </th>
-            <th>
-                Email
-                <a href="/admin/suppliers?sort=email_supplier&order=asc">▲</a>
-                <a href="/admin/suppliers?sort=email_supplier&order=desc">▼</a>
-            </th>
-            <th>No. Telp</th>
-            <th>Alamat</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tbody>
-            <% suppliers.forEach(s => { %>
+    <h1>Manage Suppliers</h1>
+
+    <div class="header-actions">
+        <a href="/admin/supplier/add" class="btn btn-add">+ Tambah Supplier</a>
+
+        <form action="/admin/suppliers" method="GET" class="search-form">
+            <input type="text" name="search" class="search-input" 
+                   placeholder="Cari nama, alamat, atau telp..." 
+                   value="<%= search %>">
+            <button type="submit" class="btn-search">Cari</button>
+            <% if(search) { %>
+                <a href="/admin/suppliers" class="btn" style="background:#666; padding: 8px 15px;">Reset</a>
+            <% } %>
+        </form>
+
+        <a href="/admin/supplier/export" class="btn btn-export">Export CSV</a>
+    </div>
+
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
                 <tr>
-                    <!-- <td><%= s.id_supplier %></td> -->
-                    <td><%= s.name_supplier %></td>
-                    <td><%= s.email_supplier %></td>
-                    <td><%= s.pnumber_supplier %></td>
-                    <td><%= s.address_supplier %></td>
-                    <td class="actions">
-                        <a href="/admin/supplier/edit/<%= s.id_supplier %>" class="btn btn-edit">Edit</a>
-                        <form action="/admin/supplier/delete/<%= s.id_supplier %>" method="POST" onsubmit="return confirm('Yakin?');" style="display:inline;">
-                            <button type="submit" class="btn btn-delete">Hapus</button>
-                        </form>
-                    </td>
+                    <th>No</th>
+                    <th>Nama Supplier</th>
+                    <th>Email</th>
+                    <th>No. Telp</th>
+                    <th>Alamat</th>
+                    <th>Manage</th>
                 </tr>
-            <% }) %>
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                <% if(data.length > 0) { %>
+                    <% data.forEach((item, index) => { %>
+                    <tr>
+                        <td><%= index + 1 %></td>
+                        <td><%= item.name_supplier %></td>
+                        <td><%= item.email_supplier %></td>
+                        <td><%= item.pnumber_supplier %></td>
+                        <td><%= item.address_supplier %></td>
+                        <td class="actions">
+                            <a href="/admin/supplier/edit/<%= item.id_supplier %>" class="btn btn-edit">Edit</a>
+                            
+                            <form action="/admin/supplier/delete/<%= item.id_supplier %>" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-delete" onclick="return confirm('Yakin hapus?');">Hapus</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6" style="text-align:center;">Data tidak ditemukan.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
 
 <%- include('../partials/_footerAdmin') %>
