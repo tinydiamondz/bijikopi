@@ -1,0 +1,160 @@
+/* ===== GLOBAL BODY ===== */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #fdf7f2;
+  color: #3e2f1c;
+  margin: 0;
+  padding: 0;
+  overflow-y: scroll; /* pastikan selalu ada scrollbar */
+  scrollbar-gutter: stable; /* konten tidak bergeser saat scrollbar muncul */
+}
+
+/* ===== CUSTOM SCROLLBAR ===== */
+body::-webkit-scrollbar {
+  width: 10px; /* lebar scrollbar */
+}
+
+body::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.05); /* track tipis dan transparan */
+  border-radius: 10px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: rgba(255, 152, 0, 0.5); /* warna modern */
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 152, 0, 0.8);
+}
+
+/* ===== NAVBAR DENGAN EFEK RIPPLE AIR ===== */
+nav {
+    padding: 12px 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999; /* pastikan selalu di atas konten & scrollbar */
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Tengah */
+.nav-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    position: relative;
+}
+
+.nav-center a {
+    color: #fbe9e7;
+    text-decoration: none;
+    font-weight: 600;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efek ripple */
+.nav-center a::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.5s ease, height 0.5s ease, opacity 0.5s ease;
+    opacity: 0;
+}
+
+.nav-center a:hover::after {
+    width: 300%;
+    height: 300%;
+    opacity: 0;
+    animation: ripple-expand 0.7s ease-out forwards;
+}
+
+@keyframes ripple-expand {
+    0% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(0);
+        backdrop-filter: blur(0px);
+    }
+    50% {
+        opacity: 0.3;
+        transform: translate(-50%, -50%) scale(1.5);
+        backdrop-filter: blur(6px);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(3);
+        backdrop-filter: blur(10px);
+    }
+}
+
+.nav-center a:hover {
+    color: #ffcc80;
+}
+
+/* Kanan */
+.nav-right {
+    position: absolute;
+    right: 40px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-right .logged-as {
+    font-size: 13px;
+    color: #ffe0b2;
+}
+
+/* Kiri */
+.nav-left {
+    position: absolute;
+    left: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.login-btn {
+    color: #fbe9e7;
+    background-color: #6d4c41;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.login-btn:hover {
+    background-color: #8d6e63;
+    color: #fff3e0;
+}
+
+.points-display {
+    margin-right: 15px;
+    background: #f0d58c;
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #5a3e1b;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}

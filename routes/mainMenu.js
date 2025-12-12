@@ -3,32 +3,61 @@ const router = express.Router();
 const db = require("../connect"); // pool.promise()
 
 // Middleware cek login
-function checkLogin(req, res, next){
-    if(req.session.user && req.session.role){
+function checkLogin(req, res, next) {
+    if (req.session.user && req.session.role) {
         next();
     } else {
         res.redirect("/login");
     }
 }
-// MAIN page
-router.get("/", (req, res) => {
-    const role = req.session.role || null;
-    const user = req.session.user || null;
-    res.render("main-menu", { role, user });
+
+// MAIN PAGE
+router.get("/", checkLogin, async (req, res) => {
+    const role = req.session.role;
+    const user = req.session.user;
+
+    try {
+        const [rows] = await db.query(
+            `SELECT qty_point FROM point WHERE id_customer = ?`,
+            [user.id_customer]
+        );
+
+        const point = rows.length > 0 ? rows[0].qty_point : 0;
+
+        res.render("main-menu", { role, user, point });
+
+    } catch (err) {
+        console.error("Error fetching points:", err);
+        res.render("main-menu", { role, user, point: 0 });
+    }
 });
+
+
 
 // FOODS 
 // === GET: tampilkan halaman awal ===
 router.get("/foods", checkLogin, async (req, res) => {
+    const role = req.session.role;
+    const user = req.session.user;
+
     try {
-        const sql = "SELECT * FROM food";
-        const [results] = await db.query(sql);
+        const [foods] = await db.query("SELECT * FROM food");
+
+        const [rows] = await db.query(
+            `SELECT qty_point FROM point WHERE id_customer = ?`,
+            [user.id_customer]
+        );
+
+        const point = rows.length > 0 ? rows[0].qty_point : 0;
+
         res.render("foods", {
-            role: req.session.role,
-            user: req.session.user,
-            foods: results,
-            added: 0
+            role,
+            user,
+            foods,
+            added: 0,
+            point
         });
+
     } catch (err) {
         console.error("❌ Database error:", err);
         res.status(500).send("Server error");
@@ -38,14 +67,27 @@ router.get("/foods", checkLogin, async (req, res) => {
 // === POST: setelah berhasil tambah ke cart ===
 router.post("/foods", checkLogin, async (req, res) => {
     try {
-        const sql = "SELECT * FROM food";
-        const [results] = await db.query(sql);
+        const id_customer = req.session.user.id_customer;
+
+        // Ambil data food
+        const [results] = await db.query("SELECT * FROM food");
+
+        // Ambil point user
+        const [rows] = await db.query(
+            `SELECT qty_point FROM point WHERE id_customer = ?`,
+            [id_customer]
+        );
+
+        const point = rows.length > 0 ? rows[0].qty_point : 0;
+
         res.render("foods", {
             role: req.session.role,
             user: req.session.user,
             foods: results,
-            added: 1 // trigger alert
+            added: 1, // trigger alert
+            point
         });
+
     } catch (err) {
         console.error("❌ Database error:", err);
         res.status(500).send("Server error");
@@ -55,13 +97,26 @@ router.post("/foods", checkLogin, async (req, res) => {
 // DRINKS page
 router.get("/drinks", checkLogin, async (req, res) => {
     try {
+        const user = req.session.user;
+
+        // Ambil semua minuman
         const sql = "SELECT * FROM drink";
         const [results] = await db.query(sql);
+
+        // Ambil point customer
+        const [rows] = await db.query(
+            `SELECT qty_point FROM point WHERE id_customer = ?`,
+            [user.id_customer]
+        );
+
+        const point = rows.length > 0 ? rows[0].qty_point : 0;
+
         res.render("drinks", {
             role: req.session.role,
-            user: req.session.user,
+            user,
             drinks: results,
-            added: 0
+            added: 0,
+            point
         });
     } catch (err) {
         console.error("❌ Database error:", err);
@@ -69,17 +124,32 @@ router.get("/drinks", checkLogin, async (req, res) => {
     }
 });
 
+
 // ===== POST /drinks (tampil + alert sukses) =====
 router.post("/drinks", checkLogin, async (req, res) => {
     try {
-        const sql = "SELECT * FROM drink";
-        const [results] = await db.query(sql);
+        const id_customer = req.session.user.id_customer;
+
+        // Ambil semua minuman
+        const [results] = await db.query("SELECT * FROM drink");
+
+        // Ambil point user
+        const [rows] = await db.query(
+            `SELECT qty_point FROM point WHERE id_customer = ?`,
+            [id_customer]
+        );
+
+        const point = rows.length ? rows[0].qty_point : 0;
+
+        // Render halaman drinks + kirim point
         res.render("drinks", {
             role: req.session.role,
             user: req.session.user,
             drinks: results,
-            added: 1 // trigger alert di EJS
+            added: 1, // trigger alert
+            point
         });
+
     } catch (err) {
         console.error("❌ Database error:", err);
         res.status(500).send("Server error");
@@ -120,14 +190,23 @@ router.post("/add-to-cart", checkLogin, async (req, res) => {
         const [results2] = await db.query(sqlCheck, paramsCheck);
 
         const afterUpdateOrInsert = async () => {
-            // ambil ulang list sesuai type
             const sqlList = type === "food" ? "SELECT * FROM food" : "SELECT * FROM drink";
             const [listResults] = await db.query(sqlList);
+        
+            // AMBIL POINT USER
+            const id_customer = req.session.user.id_customer;
+            const [rows] = await db.query(
+                "SELECT qty_point FROM point WHERE id_customer = ?",
+                [id_customer]
+            );
+            const point = rows.length > 0 ? rows[0].qty_point : 0;
+        
             res.render(type === "food" ? "foods" : "drinks", {
                 role: req.session.role,
                 user: req.session.user,
                 [type === "food" ? "foods" : "drinks"]: listResults,
-                added: 1
+                added: 1,
+                point   // <=== WAJIB!
             });
         };
 
@@ -163,7 +242,8 @@ router.post("/add-to-cart", checkLogin, async (req, res) => {
 
 // Tampilkan cart
 router.get("/cart", checkLogin, async (req, res) => {
-    const id_customer = req.session.user.id_customer;
+    const user = req.session.user;
+    const id_customer = user.id_customer;
 
     const sql = `
         SELECT c.*, f.price_food, d.price_drink 
@@ -179,12 +259,22 @@ router.get("/cart", checkLogin, async (req, res) => {
         const [resultTotal] = await db.query(sqlTotal, [id_customer]);
         const totalPrice = resultTotal[0].total_price || 0;
 
+        // Ambil point terbaru
+        const [rows] = await db.query(
+            `SELECT qty_point FROM point WHERE id_customer=?`,
+            [id_customer]
+        );
+
+        const point = rows.length > 0 ? rows[0].qty_point : 0;
+
         res.render("cart", {
             role: req.session.role,
-            user: req.session.user,
+            user,
             cart: results,
-            totalPrice
+            totalPrice,
+            point
         });
+
     } catch (err) {
         console.error("❌ Database error:", err);
         res.status(500).send("Server error");
@@ -319,51 +409,53 @@ router.get("/transactions", checkLogin, async (req, res) => {
     const id_customer = req.session.user.id_customer;
 
     try {
-        // Ambil semua transaksi sukses user
-        const sqlTrans = `SELECT * FROM transaction WHERE id_customer = ? ORDER BY date_transaction DESC`;
-        const [transactions] = await db.query(sqlTrans, [id_customer]);
+        // GET POINT
+        const [rows] = await db.query(
+            `SELECT qty_point FROM point WHERE id_customer = ?`,
+            [id_customer]
+        );
+        const point = rows.length ? rows[0].qty_point : 0;
+
+        // GET TRANSACTIONS
+        const [transactions] = await db.query(
+            `SELECT * 
+             FROM transaction 
+             WHERE id_customer = ? 
+             ORDER BY date_transaction DESC`,
+            [id_customer]
+        );
 
         const allItems = [];
         let totalHistory = 0;
 
+        // PARSE TRANSAKSI
         transactions.forEach(tr => {
-            let names = [];
-            let qtys = [];
-            let subtotals = [];
+            const names = tr.menu_transaction.split(',').map(n => n.trim());
+            const qtys = tr.qty_transaction.split(',').map(q => Number(q.trim()));
+            const subtotals = tr.subtotal_transaction.split(',').map(s => Number(s.trim()));
 
-            if (tr.menu_transaction && typeof tr.menu_transaction === "string") {
-                names = tr.menu_transaction.split(",").map(n => n.trim());
-            }
-            if (tr.qty_transaction && typeof tr.qty_transaction === "string") {
-                qtys = tr.qty_transaction.split(",").map(n => Number(n.trim()));
-            } else {
-                qtys = Array(names.length).fill(1);
-            }
-            if (tr.subtotal_transaction && typeof tr.subtotal_transaction === "string") {
-                subtotals = tr.subtotal_transaction.split(",").map(n => Number(n.trim()));
-            } else {
-                subtotals = Array(names.length).fill(tr.total_transaction / names.length);
-            }
+            totalHistory += subtotals.reduce((a, b) => a + b, 0);
 
-            totalHistory += subtotals.reduce((acc, val) => acc + val, 0);
-
-            names.forEach((name, idx) => {
+            names.forEach((name, i) => {
                 allItems.push({
                     name_cart: name,
-                    qty_cart: qtys[idx] || 1,
-                    total_cart: subtotals[idx] || 0,
+                    qty_cart: qtys[i] || 1,
+                    total_cart: subtotals[i] || 0,
                     date_transaction: tr.date_transaction,
                     paymentMethod_transaction: tr.paymentMethod_transaction || "-"
                 });
             });
         });
 
+        // RENDER
         res.render("transaction", {
             user: req.session.user,
             role: req.session.role,
             allItems,
-            totalHistory
+            totalHistory,
+            point
         });
+
     } catch (err) {
         console.error("❌ Database error:", err);
         res.status(500).send("Server error");
@@ -377,6 +469,19 @@ router.get("/rating/:id_transaction", checkLogin, async (req, res) => {
     const id_customer = req.session.user.id_customer;
 
     try {
+
+        // ============================
+        // AMBIL POINT USER
+        // ============================
+        const [rows] = await db.query(
+            `SELECT qty_point FROM point WHERE id_customer = ?`,
+            [id_customer]
+        );
+        const point = rows.length > 0 ? rows[0].qty_point : 0;
+
+        // ============================
+        // AMBIL TRANSAKSI
+        // ============================
         const [trans] = await db.query(
             `SELECT * FROM transaction WHERE id_transaction = ? AND id_customer = ?`,
             [id_transaction, id_customer]
@@ -390,6 +495,9 @@ router.get("/rating/:id_transaction", checkLogin, async (req, res) => {
             return res.send("<script>alert('Transaksi sudah dirating!'); window.location.href='/transactions';</script>");
         }
 
+        // ============================
+        // AMBIL CART YANG TERKAIT
+        // ============================
         const [carts] = await db.query(
             `SELECT * FROM cart WHERE id_customer = ? AND created_at <= ?`,
             [id_customer, trans[0].date_transaction]
@@ -399,21 +507,28 @@ router.get("/rating/:id_transaction", checkLogin, async (req, res) => {
             return res.send("<script>alert('Cart tidak ditemukan untuk rating!'); window.location.href='/transactions';</script>");
         }
 
+        // Izinkan rating
         req.session.canRate = { 
             id_transaction, 
             cart_ids: carts.map(c => c.id_cart) 
         };
 
+        // ============================
+        // RENDER PAGE (KIRIM POINT!)
+        // ============================
         res.render("rating", {
             user: req.session.user,
             transaction: trans[0],
-            items: carts
+            items: carts,
+            point  // <===== dikirim ke EJS
         });
+
     } catch (err) {
         console.error("❌ Database error:", err);
         res.status(500).send("Server error");
     }
 });
+
 
 // ===================== POST RATING SUBMIT =====================
 router.post("/rating/submit", checkLogin, async (req, res) => {
@@ -425,28 +540,58 @@ router.post("/rating/submit", checkLogin, async (req, res) => {
         return res.json({ success: false, message: "Data rating tidak valid!" });
     }
 
+    // Helper tambah poin
+    async function addPoints(id_customer, amount) {
+        const [rows] = await db.query(
+            `SELECT qty_point FROM point WHERE id_customer = ?`,
+            [id_customer]
+        );
+
+        if (rows.length === 0) {
+            await db.query(
+                `INSERT INTO point (qty_point, id_customer) VALUES (?, ?)`,
+                [amount, id_customer]
+            );
+        } else {
+            const newTotal = rows[0].qty_point + amount;
+            await db.query(
+                `UPDATE point SET qty_point = ? WHERE id_customer = ?`,
+                [newTotal, id_customer]
+            );
+        }
+    }
+
     const menuNames = items.map(c => c.name_cart).join(', ');
     const qtys = items.map(c => c.qty_cart).join(',');
     const subtotals = items.map(c => c.total_cart).join(',');
     const total = items.reduce((acc, c) => acc + c.total_cart, 0);
 
     try {
+        // INSERT TRANSACTION
         const [result] = await db.query(
-            `INSERT INTO transaction (id_customer, menu_transaction, qty_transaction, subtotal_transaction, paymentMethod_transaction, total_transaction, date_transaction)
-             VALUES (?, ?, ?, ?, ?, ?, NOW())`,
+            `INSERT INTO transaction 
+            (id_customer, menu_transaction, qty_transaction, subtotal_transaction, paymentMethod_transaction, total_transaction, date_transaction)
+            VALUES (?, ?, ?, ?, ?, ?, NOW())`,
             [id_customer, menuNames, qtys, subtotals, payment_method, total]
         );
 
         const id_transaction = result.insertId;
 
-        if(!isSkip){
+        if (!isSkip) {
+            // INSERT RATING
             const [result2] = await db.query(
                 `INSERT INTO rating (id_transaction, id_customer, comment_rating, date_rating)
                  VALUES (?, ?, ?, NOW())`,
                 [id_transaction, id_customer, comment_rating]
             );
 
+            // Tambah poin
+            await addPoints(id_customer, 10);
+            console.log(`Customer ${id_customer} mendapat 10 poin`);
+
             const id_rating = result2.insertId;
+
+            // INSERT RATING DETAIL
             const ratingDetails = ratings.map(r => [
                 id_rating,
                 r.name_cart,
@@ -457,46 +602,38 @@ router.post("/rating/submit", checkLogin, async (req, res) => {
             ]);
 
             await db.query(
-                `INSERT INTO rating_detail (id_rating, menu_rating_detail, id_food, id_drink, qty_rating_detail, value_rating_detail)
-                 VALUES ?`,
+                `INSERT INTO rating_detail 
+                (id_rating, menu_rating_detail, id_food, id_drink, qty_rating_detail, value_rating_detail)
+                VALUES ?`,
                 [ratingDetails]
             );
-            for (const c of items) {
-                if (c.id_food) {
-                    await db.query(
-                        `UPDATE food SET qty_food = qty_food - ? WHERE id_food = ?`,
-                        [c.qty_cart, c.id_food]
-                    );
-                } else if (c.id_drink) {
-                    await db.query(
-                        `UPDATE drink SET qty_drink = qty_drink - ? WHERE id_drink = ?`,
-                        [c.qty_cart, c.id_drink]
-                    );
-                }
-            }
-            await db.query(`DELETE FROM cart WHERE id_cart IN (?)`, [cart_ids]);
-            req.session.canRate = null;
-            return res.json({ success: true });
         } else {
-// Kurangi stok berdasarkan cart
-            for (const c of items) {
-                if (c.id_food) {
-                    await db.query(
-                        `UPDATE food SET qty_food = qty_food - ? WHERE id_food = ?`,
-                        [c.qty_cart, c.id_food]
-                    );
-                } else if (c.id_drink) {
-                    await db.query(
-                        `UPDATE drink SET qty_drink = qty_drink - ? WHERE id_drink = ?`,
-                        [c.qty_cart, c.id_drink]
-                    );
-                }
-            }            
-            // SKIP: hapus cart tapi tidak insert rating  
-            await db.query(`DELETE FROM cart WHERE id_cart IN (?)`, [cart_ids]);
-            req.session.canRate = null;
-            return res.json({ success: true });
+            // Skip rating tapi tetap tambah poin
+            await addPoints(id_customer, 10);
         }
+
+        // Kurangi stok
+        for (const c of items) {
+            if (c.id_food) {
+                await db.query(
+                    `UPDATE food SET qty_food = qty_food - ? WHERE id_food = ?`,
+                    [c.qty_cart, c.id_food]
+                );
+            } else if (c.id_drink) {
+                await db.query(
+                    `UPDATE drink SET qty_drink = qty_drink - ? WHERE id_drink = ?`,
+                    [c.qty_cart, c.id_drink]
+                );
+            }
+        }
+
+        // Hapus cart
+        await db.query(`DELETE FROM cart WHERE id_cart IN (?)`, [cart_ids]);
+
+        // Reset session
+        req.session.canRate = null;
+
+        return res.json({ success: true });
 
     } catch (err) {
         console.error("❌ Database error:", err);
@@ -506,19 +643,36 @@ router.post("/rating/submit", checkLogin, async (req, res) => {
 
 
 
-// ===================== FORUM// ===================== FORUM PAGE =====================
+
+
+// ===================== FORUM// ===================== 
 router.get("/forum", checkLogin, async (req, res) => {
-    const sql = `
-        SELECT r.id_rating, r.date_rating, r.comment_rating,
-               rd.menu_rating_detail, rd.qty_rating_detail, rd.value_rating_detail,
-               c.fullname_customer
-        FROM rating r
-        JOIN rating_detail rd ON r.id_rating = rd.id_rating
-        JOIN customer c ON r.id_customer = c.id_customer
-        ORDER BY r.date_rating DESC
-    `;
+    const id_customer = req.session.user.id_customer;
 
     try {
+
+        // =============================
+        // 1. AMBIL POINT USER
+        // =============================
+        const [rows] = await db.query(
+            `SELECT qty_point FROM point WHERE id_customer = ?`,
+            [id_customer]
+        );
+        const point = rows.length > 0 ? rows[0].qty_point : 0;
+
+        // =============================
+        // 2. AMBIL DATA RATING FORUM
+        // =============================
+        const sql = `
+            SELECT r.id_rating, r.date_rating, r.comment_rating,
+                   rd.menu_rating_detail, rd.qty_rating_detail, rd.value_rating_detail,
+                   c.fullname_customer
+            FROM rating r
+            JOIN rating_detail rd ON r.id_rating = rd.id_rating
+            JOIN customer c ON r.id_customer = c.id_customer
+            ORDER BY r.date_rating DESC
+        `;
+
         const [results] = await db.query(sql);
 
         const ratingsMap = {};
@@ -534,7 +688,6 @@ router.get("/forum", checkLogin, async (req, res) => {
                 };
             }
 
-            // ✅ Properti disesuaikan dengan forum.ejs
             ratingsMap[row.id_rating].purchasedItems.push({
                 name: row.menu_rating_detail,
                 qty: row.qty_rating_detail,
@@ -544,11 +697,16 @@ router.get("/forum", checkLogin, async (req, res) => {
 
         const ratings = Object.values(ratingsMap);
 
+        // =============================
+        // 3. RENDER + KIRIM POINT KE EJS
+        // =============================
         res.render("forum", {
             user: req.session.user,
             role: req.session.role,
-            ratings
+            ratings,
+            point
         });
+
     } catch (err) {
         console.error("❌ Database error:", err);
         res.status(500).send("Server error");
