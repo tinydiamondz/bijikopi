@@ -12,6 +12,7 @@
 }
 
 body {
+    padding-top: 100px;
     font-family: "Poppins", sans-serif;
     background-color: #7a6945;
     color: #3e2723;
@@ -609,3 +610,4 @@ footer {
         font-size: 12px;
     }
 }
+
