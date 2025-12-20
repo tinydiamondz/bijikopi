@@ -17,7 +17,7 @@ body {
     justify-content: space-between;
     align-items: center;
     
-    background-color: rgba(26, 26, 26, 0.8); 
+    background-color: rgba(172, 107, 22, 0.8); 
     
     /* Efek kaca buram */
     backdrop-filter: blur(10px); 
@@ -349,3 +349,4 @@ form a {
         width: 100%;
     }
 }
+
