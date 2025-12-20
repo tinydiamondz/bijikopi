@@ -5,15 +5,11 @@
     <div class="header-actions">
         <a href="/admin/drink/add" class="btn btn-add">+ Tambah Minuman</a>
 
-        <form action="/admin/drinks" method="GET" class="search-form">
-            <input type="text" name="search" class="search-input" 
-                   placeholder="Cari nama, stok, atau harga..." 
-                   value="<%= search %>">
-            <button type="submit" class="btn-search">Cari</button>
-            <% if(search) { %>
-                <a href="/admin/drinks" class="btn" style="background:#666; padding: 8px 15px;">Reset</a>
-            <% } %>
-        </form>
+        <div class="search-form">
+            <input type="text" id="adminSearchInput" class="search-input" 
+                   placeholder="🔍 Ketik untuk mencari..." 
+                   style="width: 300px;">
+        </div>
 
         <a href="/admin/drink/export" class="btn btn-export">Export CSV</a>
     </div>
@@ -22,17 +18,20 @@
         <table>
             <thead>
                 <tr>
-                    <th>Nama Minuman
-                        <a href="?sort=name_drink&order=ASC">▲</a>
-                        <a href="?sort=name_drink&order=DESC">▼</a>
+                    <th>
+                        Nama Minuman
+                        <a href="?sort=name_drink&order=ASC" style="text-decoration:none; color:#ccc;">▲</a>
+                        <a href="?sort=name_drink&order=DESC" style="text-decoration:none; color:#ccc;">▼</a>
                     </th>
-                    <th>stok
-                        <a href="?sort=qty_drink&order=ASC">▲</a>
-                        <a href="?sort=qty_drink&order=DESC">▼</a>
+                    <th>
+                        Stok
+                        <a href="?sort=qty_drink&order=ASC" style="text-decoration:none; color:#ccc;">▲</a>
+                        <a href="?sort=qty_drink&order=DESC" style="text-decoration:none; color:#ccc;">▼</a>
                     </th>
-                    <th>Harga
-                        <a href="?sort=price_drink&order=ASC">▲</a>
-                        <a href="?sort=price_drink&order=DESC">▼</a>
+                    <th>
+                        Harga
+                        <a href="?sort=price_drink&order=ASC" style="text-decoration:none; color:#ccc;">▲</a>
+                        <a href="?sort=price_drink&order=DESC" style="text-decoration:none; color:#ccc;">▼</a>
                     </th>
                     <th>Manage</th>
                 </tr>
@@ -40,10 +39,10 @@
             <tbody>
                 <% if(data.length > 0) { %>
                     <% data.forEach((item, index) => { %>
-                    <tr>
-                        <td><%= item.name_drink %></td>
-                        <td><%= item.qty_drink %></td>
-                        <td>Rp <%= new Intl.NumberFormat('id-ID').format(item.price_drink) %></td>
+                    <tr class="search-item">
+                        <td class="search-name"><%= item.name_drink %></td>
+                        <td class="search-qty"><%= item.qty_drink %></td>
+                        <td class="search-price">Rp <%= new Intl.NumberFormat('id-ID').format(item.price_drink) %></td>
                         <td class="actions">
                             <a href="/admin/drink/edit/<%= item.id_drink %>" class="btn btn-edit">Edit</a>
                             
@@ -54,12 +53,51 @@
                     </tr>
                     <% }) %>
                 <% } else { %>
-                    <tr>
-                        <td colspan="6" style="text-align:center;">Data tidak ditemukan.</td>
+                    <tr id="noDataRow">
+                        <td colspan="4" style="text-align:center;">Data tidak ditemukan.</td>
                     </tr>
                 <% } %>
+
+                <tr id="noSearchResult" style="display: none;">
+                    <td colspan="4" style="text-align:center; padding: 20px; color: #666;">Tidak ada data yang cocok.</td>
+                </tr>
             </tbody>
         </table>
     </div>
 
 <%- include('../partials/_footerAdmin') %>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const searchInput = document.getElementById('adminSearchInput');
+        const tableRows = document.querySelectorAll('.search-item');
+        const noSearchResult = document.getElementById('noSearchResult');
+        const noDataRow = document.getElementById('noDataRow');
+
+        searchInput.addEventListener('input', function(e) {
+            const searchValue = e.target.value.toLowerCase();
+            let visibleCount = 0;
+
+            tableRows.forEach(row => {
+                const name = row.querySelector('.search-name').innerText.toLowerCase();
+                const qty = row.querySelector('.search-qty').innerText.toLowerCase();
+                const price = row.querySelector('.search-price').innerText.toLowerCase();
+                const priceClean = price.replace(/[^0-9]/g, '');
+
+                if (name.includes(searchValue) || qty.includes(searchValue) || price.includes(searchValue) || priceClean.includes(searchValue)) {
+                    row.style.display = ""; 
+                    visibleCount++;
+                } else {
+                    row.style.display = "none";
+                }
+            });
+
+            if (visibleCount === 0) {
+                if(noSearchResult) noSearchResult.style.display = "table-row";
+                if(noDataRow) noDataRow.style.display = "none";
+            } else {
+                if(noSearchResult) noSearchResult.style.display = "none";
+            }
+        });
+    });
+</script>
