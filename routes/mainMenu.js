@@ -279,29 +279,32 @@ router.post("/payment", checkLogin, async (req, res) => {
 // ===================== CONFIRM CHECKOUT =====================
 router.post("/confirm", checkLogin, async (req, res) => {
     const id_customer = req.session.user.id_customer;
-    const selectedItems = req.body.selected;
+    let selectedItems = req.body.selected;
+
+    if (!selectedItems) {
+        return res.send("<script>alert('Tidak ada item dipilih');window.location.href='/cart'</script>");
+    }
+
+    // 🔥 PAKSA ARRAY
+    selectedItems = Array.isArray(selectedItems) ? selectedItems : [selectedItems];
+
     const paymentMethod = req.body.payment_method;
-    
-    // TANGKAP INPUT 'use_points' (Checkbox di payment.ejs)
-    // Jika dicentang, nilainya string "true", jika tidak undefined
-    const usePoints = req.body.use_points; 
+    const usePoints = req.body.use_points;
 
-    try {
-        const sqlCart = `SELECT * FROM cart WHERE id_customer = ? AND id_cart IN (?)`;
-        const [carts] = await db.query(sqlCart, [id_customer, selectedItems]);
+    const [carts] = await db.query(
+        `SELECT * FROM cart WHERE id_customer=? AND id_cart IN (?)`,
+        [id_customer, selectedItems]
+    );
 
-        if (carts.length === 0) return res.send("<script>alert('Cart kosong!'); window.location.href='/cart';</script>");
+    req.session.canRate = {
+        id_customer,
+        cart_ids: selectedItems, // 🔥 PENTING
+        payment_method: paymentMethod,
+        items: carts,
+        use_points: usePoints
+    };
 
-        req.session.canRate = {
-            id_customer,
-            cart_ids: carts.map(c => c.id_cart),
-            payment_method: paymentMethod,
-            items: carts,
-            use_points: usePoints // SIMPAN STATUS TUKAR POIN
-        };
-
-        res.redirect("/rating");
-    } catch (err) { res.status(500).send("Server error"); }
+    res.redirect("/rating");
 });
 
 router.get("/rating", checkLogin, (req, res) => {
@@ -313,81 +316,158 @@ router.get("/rating", checkLogin, (req, res) => {
 // ===================== SUBMIT TRANSAKSI FINAL (LOGIKA UTAMA) =====================
 router.post("/rating/submit", checkLogin, async (req, res) => {
     const id_customer = req.session.user.id_customer;
-    const { cart_ids, payment_method, items, use_points } = req.session.canRate || {};
+
+    // Ambil data dari session
+    const sessionData = req.session.canRate;
+    if (!sessionData) {
+        return res.json({ success: false, message: "Session hilang!" });
+    }
+
+    let { cart_ids, payment_method, items, use_points } = sessionData;
+
+    // Ambil dari body
     const { ratings, comment_rating, isSkip } = req.body;
 
-    if (!cart_ids || !items) return res.json({ success: false, message: "Data invalid!" });
+    // Normalisasi isSkip (boolean murni)
+    const isSkipReview = isSkip === true || isSkip === "true";
 
-    // Helper Point
+    // Validasi cart & item
+    if (!Array.isArray(cart_ids) || cart_ids.length === 0 || !Array.isArray(items)) {
+        return res.json({ success: false, message: "Data transaksi invalid!" });
+    }
+
+    // ================= HELPER POINT =================
     async function addPoints(id, amt) {
-        const [rows] = await db.query(`SELECT qty_point FROM point WHERE id_customer=?`, [id]);
-        if (rows.length === 0) await db.query(`INSERT INTO point VALUES (?, ?)`, [amt, id]);
-        else await db.query(`UPDATE point SET qty_point = qty_point + ? WHERE id_customer=?`, [amt, id]);
-    }
-    async function deductPoints(id, amt) {
-        await db.query(`UPDATE point SET qty_point = qty_point - ? WHERE id_customer=?`, [amt, id]);
+        const [rows] = await db.query(
+            "SELECT qty_point FROM point WHERE id_customer=?",
+            [id]
+        );
+
+        if (rows.length === 0) {
+            await db.query(
+                "INSERT INTO point (id_customer, qty_point) VALUES (?, ?)",
+                [id, amt]
+            );
+        } else {
+            await db.query(
+                "UPDATE point SET qty_point = qty_point + ? WHERE id_customer=?",
+                [amt, id]
+            );
+        }
     }
 
-    const menuNames = items.map(c => c.name_cart).join(', ');
-    const qtys = items.map(c => c.qty_cart).join(',');
-    const subtotals = items.map(c => c.total_cart).join(',');
-    
-    // Hitung Total Awal
-    let total = items.reduce((acc, c) => acc + c.total_cart, 0);
+    async function deductPoints(id, amt) {
+        await db.query(
+            "UPDATE point SET qty_point = qty_point - ? WHERE id_customer=?",
+            [amt, id]
+        );
+    }
+
+    // ================= PREPARE TRANSACTION DATA =================
+    const menuNames = items.map(i => i.name_cart).join(", ");
+    const qtys = items.map(i => i.qty_cart).join(",");
+    const subtotals = items.map(i => i.total_cart).join(",");
+
+    let total = items.reduce((sum, i) => sum + i.total_cart, 0);
 
     try {
-        // 1. CEK VOUCHER SABTU (20%)
+        // ================= DISCOUNT =================
+        // Voucher Sabtu
         if (req.session.voucherActive) {
-            total = total * 0.8; 
+            total *= 0.8;
         }
 
-        // 2. CEK TUKAR POIN (50%) <-- INI YANG TADI HILANG, SEKARANG ADA LAGI
-        if (use_points === 'true') {
-            const [ptRow] = await db.query("SELECT qty_point FROM point WHERE id_customer=?", [id_customer]);
-            const currentPoints = ptRow.length ? ptRow[0].qty_point : 0;
+        // Tukar poin
+        if (use_points === "true") {
+            const [ptRow] = await db.query(
+                "SELECT qty_point FROM point WHERE id_customer=?",
+                [id_customer]
+            );
 
+            const currentPoints = ptRow.length ? ptRow[0].qty_point : 0;
             if (currentPoints >= 50) {
-                total = total * 0.5; // Potong 50% lagi
-                await deductPoints(id_customer, 50); // Kurangi poin
+                total *= 0.5;
+                await deductPoints(id_customer, 50);
             }
         }
 
-        // 3. Simpan ke Database
-        const [result] = await db.query(
+        // ================= INSERT TRANSACTION =================
+        const [trxResult] = await db.query(
             `INSERT INTO transaction 
             (id_customer, menu_transaction, qty_transaction, subtotal_transaction, paymentMethod_transaction, total_transaction, date_transaction)
             VALUES (?, ?, ?, ?, ?, ?, NOW())`,
             [id_customer, menuNames, qtys, subtotals, payment_method, total]
         );
 
-        const id_transaction = result.insertId;
-        await addPoints(id_customer, 10); // Reward belanja
+        const id_transaction = trxResult.insertId;
 
-        if (!isSkip) {
-            const [result2] = await db.query(
-                `INSERT INTO rating (id_transaction, id_customer, comment_rating, date_rating) VALUES (?, ?, ?, NOW())`,
-                [id_transaction, id_customer, comment_rating]
+        // Reward belanja
+        await addPoints(id_customer, 10);
+
+        // ================= INSERT RATING (JIKA TIDAK SKIP) =================
+        if (!isSkipReview) {
+            if (!Array.isArray(ratings) || ratings.length === 0) {
+                throw new Error("Rating kosong");
+            }
+
+            const [ratingResult] = await db.query(
+                `INSERT INTO rating 
+                (id_transaction, id_customer, comment_rating, date_rating)
+                VALUES (?, ?, ?, NOW())`,
+                [id_transaction, id_customer, comment_rating || null]
             );
-            const id_rating = result2.insertId;
-            const ratingDetails = ratings.map(r => [id_rating, r.name_cart, null, null, r.qty, r.value_rating]);
-            await db.query(`INSERT INTO rating_detail (id_rating, menu_rating_detail, id_food, id_drink, qty_rating_detail, value_rating_detail) VALUES ?`, [ratingDetails]);
+
+            const id_rating = ratingResult.insertId;
+
+            const ratingDetails = ratings.map(r => [
+                id_rating,
+                r.name_cart,
+                null,
+                null,
+                r.qty,
+                r.value_rating
+            ]);
+
+            await db.query(
+                `INSERT INTO rating_detail 
+                (id_rating, menu_rating_detail, id_food, id_drink, qty_rating_detail, value_rating_detail)
+                VALUES ?`,
+                [ratingDetails]
+            );
         }
 
-        for (const c of items) {
-            if (c.id_food) await db.query(`UPDATE food SET qty_food = qty_food - ? WHERE id_food = ?`, [c.qty_cart, c.id_food]);
-            else if (c.id_drink) await db.query(`UPDATE drink SET qty_drink = qty_drink - ? WHERE id_drink = ?`, [c.qty_cart, c.id_drink]);
+        // ================= UPDATE STOCK =================
+        for (const item of items) {
+            if (item.id_food) {
+                await db.query(
+                    "UPDATE food SET qty_food = qty_food - ? WHERE id_food=?",
+                    [item.qty_cart, item.id_food]
+                );
+            } else if (item.id_drink) {
+                await db.query(
+                    "UPDATE drink SET qty_drink = qty_drink - ? WHERE id_drink=?",
+                    [item.qty_cart, item.id_drink]
+                );
+            }
         }
 
-        await db.query(`DELETE FROM cart WHERE id_cart IN (?)`, [cart_ids]);
+        // ================= CLEAR CART =================
+        await db.query(
+            "DELETE FROM cart WHERE id_cart IN (?)",
+            [cart_ids]
+        );
+
+        // Hapus session rating
         req.session.canRate = null;
 
         return res.json({ success: true });
 
     } catch (err) {
-        console.error("❌ Database error:", err);
+        console.error("❌ RATING SUBMIT ERROR:", err);
         return res.json({ success: false, message: "Server error" });
     }
 });
+
 
 // ===================== TRANSACTIONS HISTORY (SUM SUBTOTAL MANUAL) =====================
 router.get("/transactions", checkLogin, async (req, res) => {
