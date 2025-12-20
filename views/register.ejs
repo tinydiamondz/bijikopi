@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -22,13 +22,53 @@
               <p class="alert-success"><%= success %></p>
           <% } %>
 
-          <!-- Sesuaikan dengan nama field di auth.js -->
-          <input type="text" name="fullname" placeholder="Full Name" required>
-          <input type="email" name="email" placeholder="Email" required>
-          <input type="text" name="pnumber" placeholder="Nomor Telepon" required>
-          <input type="text" name="username" placeholder="Username" required>
-          <input type="password" name="password" placeholder="Password" required>
-          <input type="password" name="retypepassword" placeholder="ReType Password" required>
+          <!-- INPUT TIDAK HILANG SAAT ERROR -->
+          <input 
+            type="text" 
+            name="fullname" 
+            placeholder="Full Name"
+            value="<%= old?.fullname || '' %>" 
+            required
+          >
+
+          <input 
+            type="email" 
+            name="email" 
+            placeholder="Email"
+            value="<%= old?.email || '' %>" 
+            required
+          >
+
+          <input 
+            type="text" 
+            name="pnumber" 
+            placeholder="Nomor Telepon"
+            value="<%= old?.pnumber || '' %>" 
+            required
+          >
+
+          <input 
+            type="text" 
+            name="username" 
+            placeholder="Username"
+            value="<%= old?.username || '' %>" 
+            required
+          >
+
+          <!-- PASSWORD TIDAK DI-ISI ULANG -->
+          <input 
+            type="password" 
+            name="password" 
+            placeholder="Password" 
+            required
+          >
+
+          <input 
+            type="password" 
+            name="retypepassword" 
+            placeholder="ReType Password" 
+            required
+          >
           
           <button type="submit">Register</button>
 
