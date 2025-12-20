@@ -1,1 +1,41 @@
+<nav>
+    <div class="nav-left">
+        <span class="points-display">
+            ⭐ <%= typeof point !== 'undefined' ? point : 0 %> pts
+        </span>
+        <% if (typeof currentDateWIB !== 'undefined') { %>
+            <span class="date-display"><%= currentDateWIB %></span>
+        <% } %>
+    </div>
+
+    <div class="nav-center">
+        <% const isActive = (p) => (typeof page !== 'undefined' && page === p ? 'active' : '') %>
+
+        <a href="/" class="<%= isActive('main') %>">MAIN</a>
+        <a href="/foods" class="<%= isActive('foods') %>">FOODS</a>
+        <a href="/drinks" class="<%= isActive('drinks') %>">DRINKS</a>
+
+        <% if (typeof role !== 'undefined' && role === "customer") { %>
+            <a href="/cart" class="<%= isActive('cart') %>">CART</a>
+            <a href="/transactions" class="<%= isActive('history') %>">HISTORY</a>
+        <% } %>
+
+        <% if (typeof role !== 'undefined' && role === "admin") { %>
+            <a href="/admin/foods">ADMIN ONLY</a>
+        <% } %>
+
+        <a href="/forum" class="<%= isActive('forum') %>">FORUM</a>
+    </div>
+
+    <div class="nav-right">
+        <% if (typeof user !== 'undefined') { %>
+            <span class="logged-as">
+                LOGGED AS <%= typeof role !== 'undefined' && role === "admin" ? user.fullname_admin : user.fullname_customer %>
+            </span>
+            <a href="/logout" class="btn-logout">LOGOUT</a>
+        <% } else { %>
+            <a href="/login" class="btn-logout">LOGIN</a>
+        <% } %>
+    </div>
+</nav>
 
