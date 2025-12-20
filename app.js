@@ -1,10 +1,11 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const session = require("express-session");
-
+require("dotenv").config();
 const authRouter = require("./routes/auth");
 const mainMenuRouter = require("./routes/mainMenu");
 const adminRouter = require("./routes/adminRoutes");
+const PORT = process.env.SRV_PORT;
 
 const app = express();
 
@@ -41,5 +42,4 @@ app.use((req, res) => {
 });
 
 // Jalankan server
-const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
