@@ -1,11 +1,26 @@
+
 <nav>
     <div class="nav-left">
-        <span class="points-display">
-            ⭐ <%= typeof point !== 'undefined' ? point : 0 %> pts
-        </span>
-        <% if (typeof currentDateWIB !== 'undefined') { %>
-            <span class="date-display"><%= currentDateWIB %></span>
-        <% } %>
+    <span class="points-display">
+        ⭐ <%= (typeof point !== 'undefined' && point) ? point : 0 %> pts
+    </span>
+
+        <%
+        // Kita buat logika tanggal pake Javascript biasa disini
+        const now = new Date();
+        const options = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            timeZone: 'Asia/Jakarta'
+        };
+        const hariIni = now.toLocaleDateString('id-ID', options) + " WIB";
+        %>
+
+        <span class="date-display">
+        <%= hariIni %>
+    </span>
     </div>
 
     <div class="nav-center">
@@ -38,4 +53,3 @@
         <% } %>
     </div>
 </nav>
-
