@@ -12,6 +12,3 @@
 12. pada saat di page regist, password harus mengandung min 1 uppercase, 1 lowercase, 1 symbolic, 1 integers
 13. debug transaction history (done)
 14. adding points (done)
-15. ubah database, untuk table foods dan drinks di jadi satu tabel nya yang bikin beda buat kategori, jadi nanti tinggal ubah db.query juga untuk halaman food dan drink karena database berubah jadi 1 column mereka
-    
-
