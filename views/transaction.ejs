@@ -37,25 +37,7 @@
 </head>
 <body>
 
-    <nav>
-        <div class="nav-left">
-            <span class="points-display">⭐ <%= point %> pts</span>
-        </div>
-        <div class="nav-center">
-            <a href="/">MAIN</a>
-            <a href="/foods">FOODS</a>
-            <a href="/drinks">DRINKS</a>
-            <% if (role === "customer") { %>
-                <a href="/cart">CART</a>
-                <a href="/transactions" class="active">HISTORY</a>
-            <% } %>
-            <a href="/forum">FORUM</a>
-        </div>
-        <div class="nav-right">
-            <span class="logged-as">LOGGED AS <%= role === "admin" ? user.fullname_admin : user.fullname_customer %></span>
-            <a href="/logout" class="login-btn">LOGOUT</a>
-        </div>
-    </nav>
+    <%- include('partials/navbar') %>
 
     <div class="container">
         <h1 style="font-family: 'Poppins', sans-serif; text-align: center; margin-bottom: 30px;">History Pembayaran</h1>
@@ -122,3 +104,4 @@
     </div>
 </body>
 </html>
+
