@@ -567,4 +567,79 @@ router.get("/rating/:id_transaction", checkLogin, async (req, res) => {
     } catch(err) { res.status(500).send("Error"); }
 });
 
+router.get("/profile", checkLogin, async (req, res) => {
+    const user = req.session.user;
+
+    // Data 5 Anggota Tim
+    const teamMembers = [
+        {
+            name: "Gerald Alfons Nathaniel Werdiyanto",
+            nim: "00000119185",
+            major: "Informatika",
+            photo: "/images/profile/GeraldProfile.png", // Taruh foto di /public/images/profiles/
+            email: "geraldalfons2546@gmail.com",
+            linkedin: "https://www.linkedin.com/in/gerald-alfons-nathaniel-werdiyanto-858215325/",
+            job: "Frontend Developer",
+            quote: "\"Stop overthinking the plot. It only reveals itself once you start playing.\""
+        },
+        {
+            name: "Muhammad Faathin Naufal",
+            nim: "00000130562",
+            major: "Informatika",
+            photo: "/images/profile/FaathinProfile.png",
+            email: "mfaathinn@gmail.com",
+            linkedin: "https://www.linkedin.com/in/muhammad-faathin-naufal-0b0924316/",
+            job: "Frontend Developer",
+            quote: "\"Air mendidih tidak menyakiti kopi, ia justru mengeluarkan aroma terbaiknya. Begitu juga tekanan dalam hidupmu.\""
+        },
+        {
+            name: "Rafi Athallah Ahmad Haryanto",
+            nim: "00000130426",
+            major: "Informatika",
+            photo: "/images/profile/RafiProfile.png",
+            email: "tinydiamondzgt@gmail.com",
+            linkedin: "https://www.linkedin.com/in/rafi-athallah-ahmad-haryanto-7575662b9",
+            job: "Backend Developer",
+            quote: "\"Those who don't understand a true pain, will never understand a true peace.\""
+        },
+        {
+            name: "Muhammad Zhaky Alamsyah",
+            nim: "00000130569",
+            major: "Informatika",
+            photo: "/images/profile/AlamProfile.png",
+            email: "zhakyalamsyaa@gmail.com",
+            linkedin: "https://id.linkedin.com/in/zhaky-alamsyah-6776ab300",
+            job: "Frontend Developer",
+            quote: "\"One day or Day One. You decide.\""
+        },
+        {
+            name: "Rafael Lesmana",
+            nim: "00000130565",
+            major: "Informatika",
+            photo: "/images/profile/ElProfile.png",
+            email: "lesmana.rafael@gmail.com",
+            linkedin: "https://www.linkedin.com/in/rafael-lesmana-4a0477292?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+            job: "Backend Developer",
+            quote: "\"When you are tired of being angry, the only choice is to remain silent\""
+        }
+    ];
+
+    try {
+        // Ambil point dari session atau db (default 0 jika tidak ada)
+        const point = user.point || 0;
+
+        res.render("profile", { 
+            role: req.session.role, 
+            user: user, 
+            added: 0, 
+            point: point, 
+            page: 'profile',
+            teamMembers: teamMembers // Variabel ini sekarang sudah terdefinisi
+        });
+    } catch (err) { 
+        console.error("Error rendering profile:", err);
+        res.status(500).send("Server error"); 
+    }
+});
+
 module.exports = router;

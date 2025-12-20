@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Our Creative Minds - Biji Kopi</title>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/profile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <%- include('partials/navbar') %>
+
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+
+    <div class="hero-section" data-aos="fade-up">
+        <h1 class="main-title">The Masterminds</h1>
+        <p class="sub-title">People who craft the perfect digital coffee experience.</p>
+        <div class="search-container">
+            <input type="text" id="memberSearch" class="modern-search" placeholder="Search our team...">
+        </div>
+    </div>
+
+    <div class="container" id="profileGrid">
+    <% teamMembers.forEach((member, index) => { %>
+        <div class="profile-card" data-aos="fade-up" data-aos-delay="<%= index * 100 %>">
+            
+            <div class="ribbon-wrapper">
+                <div class="ribbon">CORE TEAM</div>
+            </div>
+
+            <div class="profile-visual">
+                <img src="<%= member.photo %>" alt="<%= member.name %>">
+                <div class="img-overlay"></div>
+            </div>
+
+            <div class="profile-detail">
+                <div class="top-content">
+                    <div class="detail-header">
+                        <span class="member-nim"><%= member.nim %></span>
+                        <h2 class="search-name"><%= member.name %></h2>
+                    </div>
+
+                    <div class="major-container">
+                        <div class="elegant-icon-wrapper">
+                            <div class="luxury-circle">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            <div class="major-text-group">
+                                <span class="label-tiny">GRADUATE OF</span>
+                                <span class="member-major"><%= member.major %></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-body">
+                        <p class="quote"><%= member.quote %></p>
+                    </div>
+                </div>
+
+                <div class="detail-footer">
+                    <div class="footer-left">
+                        <div class="skill-tags">
+                            <span><%= member.job %></span>
+                        </div>
+                    </div>
+                    <div class="footer-right">
+                        <div class="contact-group">
+                            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=<%= member.email %>" target="_blank" class="contact-link">
+                                <i class="fa-regular fa-envelope"></i>
+                            </a>
+                            <a href="<%= member.linkedin %>" target="_blank" class="contact-link" title="Connect on LinkedIn">
+                                <i class="fa-brands fa-linkedin-in"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% }) %>
+</div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Inisialisasi Animasi Scroll
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+
+        // Search Logic
+        document.getElementById('memberSearch').addEventListener('input', function(e) {
+            const val = e.target.value.toLowerCase();
+            document.querySelectorAll('.profile-card').forEach(card => {
+                const name = card.querySelector('.search-name').innerText.toLowerCase();
+                card.style.display = name.includes(val) ? "flex" : "none";
+            });
+        });
+    </script>
+</body>
+</html>

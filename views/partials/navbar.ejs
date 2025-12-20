@@ -29,6 +29,7 @@
         <a href="/" class="<%= isActive('main') %>">MAIN</a>
         <a href="/foods" class="<%= isActive('foods') %>">FOODS</a>
         <a href="/drinks" class="<%= isActive('drinks') %>">DRINKS</a>
+        <a href="/profile" class="<%= isActive('profile') %>">PROFILE</a>
 
         <% if (typeof role !== 'undefined' && role === "customer") { %>
             <a href="/cart" class="<%= isActive('cart') %>">CART</a>
