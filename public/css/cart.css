@@ -245,3 +245,47 @@ input[type="checkbox"] {
     }
 }
 
+/* popup alert */
+.popup-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Kotak popup */
+.popup {
+    background: transparent;
+    backdrop-filter: blur(10px);
+    border: 1px solid gray;
+    padding: 25px 40px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.3s ease-in-out;
+    font-family: 'Poppins', sans-serif;
+}
+
+.popup h3 {
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.popup button {
+    margin-top: 15px;
+    background: #2e7d32;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.popup button:hover {
+    background: #256628;
+}

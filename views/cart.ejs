@@ -11,7 +11,33 @@
     
 </head>
 <body>
-    <%- include('partials/navbar') %>
+    <nav>
+
+    <!-- KIRI: POINTS -->
+    <div class="nav-left">
+        <span class="points-display">
+            ⭐ <%= point %> pts
+        </span>
+    </div>
+
+    <div class="nav-center">
+      <a href="/" class="<%= page === 'main' ? 'active' : '' %>">MAIN</a>
+      <a href="/foods" class="<%= page === 'foods' ? 'active' : '' %>">FOODS</a>
+      <a href="/drinks" class="<%= page === 'drinks' ? 'active' : '' %>">DRINKS</a>
+      <a href="/cart" class="<%= page === 'cart' ? 'active' : '' %>">CART</a>
+      <a href="/transactions" class="<%= page === 'history' ? 'active' : '' %>">HISTORY</a>
+      <a href="/forum" class="<%= page === 'forum' ? 'active' : '' %>">FORUM</a>
+    </div>
+    
+    <!-- KANAN -->
+    <div class="nav-right">
+        <span class="logged-as">
+            LOGGED AS <%= role === "admin" ? user.fullname_admin : user.fullname_customer %>
+        </span>
+        <a href="/logout" class="login-btn">LOGOUT</a>
+    </div>
+
+</nav>
 
 <div class="container">
     <h1 style="font-family: 'Poppins', sans-serif; padding-top:20px">Your Cart</h1>
@@ -122,7 +148,31 @@
         }
     });
 </script>
+<script>
+    // === CONFIRM REMOVE FROM CART ===
+    document.querySelectorAll(".remove-btn").forEach(btn => {
+        btn.addEventListener("click", function (e) {
+            const confirmDelete = confirm(
+                "Are you sure?\nYou want to remove this item from cart?"
+            );
 
+            if (!confirmDelete) {
+                e.preventDefault(); // ❌ batalkan submit ke /cart/remove
+            }
+            // kalau YES → form tetap submit normal
+        });
+    });
+</script>
+<div class="popup-overlay" id="confirmPopup">
+    <div class="popup">
+        <h3>Are you sure?</h3>
+        <p style="color:#ddd">You want to remove this item from cart</p>
+
+        <div style="margin-top:15px;">
+            <button id="confirmYes">Yes</button>
+            <button id="confirmNo" style="background:#b71c1c;">Cancel</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
-
