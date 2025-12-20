@@ -344,14 +344,15 @@ router.get('/admin/sales', async (req, res) => {
     }
 });
 
-// 2. DOWNLOAD CSV (Export Data)
+// 2. DOWNLOAD CSV
 router.get('/admin/sales/export', async (req, res) => {
     try {
         const query = `
             SELECT 
                 date_transaction, 
                 id_transaction, 
-                TRIM(UPPER(menu_transaction)) as menu,  
+                TRIM(UPPER(menu_transaction)) as menu, 
+                qty_transaction, 
                 Total_transaction 
             FROM transaction 
             ORDER BY date_transaction DESC
@@ -362,13 +363,51 @@ router.get('/admin/sales/export', async (req, res) => {
 
         let csv = "Tanggal,ID Transaksi,Menu,Qty,Total Harga\n";
 
-        rows.forEach(row => {
-            const date = new Date(row.date_transaction).toLocaleDateString('id-ID');
-            csv += `"${date}","${row.id_transaction}","${row.menu}",${row.qty_transaction},${row.Total_transaction}\n`;
+        let currentMonth = "";
+        let monthRevenue = 0;
+        let grandTotal = 0;
+        let monthRowsBuffer = "";
+
+        const formatRupiah = (num) => "Rp " + num.toLocaleString('id-ID');
+
+        const getMonthName = (dateStr) => {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+        };
+
+        rows.forEach((row, index) => {
+            const rowDate = new Date(row.date_transaction);
+            const rowMonth = getMonthName(row.date_transaction);
+            const rowTotal = Number(row.Total_transaction) || 0;
+
+            if (currentMonth !== "" && rowMonth !== currentMonth) {
+                csv += `\n--- ${currentMonth} ---\n`;
+                csv += monthRowsBuffer;
+                csv += `,,,TOTAL PENDAPATAN ${currentMonth.toUpperCase()},${formatRupiah(monthRevenue)}\n`;
+                
+                monthRevenue = 0;
+                monthRowsBuffer = "";
+            }
+
+            currentMonth = rowMonth;
+
+            const dateStr = rowDate.toLocaleDateString('id-ID');
+
+            monthRowsBuffer += `"${dateStr}","#${row.id_transaction}","${row.menu}",${row.qty_transaction},${row.Total_transaction}\n`;
+            monthRevenue += rowTotal;
+            grandTotal += rowTotal;
+
+            if (index === rows.length - 1) {
+                csv += `\n--- ${currentMonth} ---\n`;
+                csv += monthRowsBuffer;
+                csv += `,,,TOTAL PENDAPATAN ${currentMonth.toUpperCase()},${formatRupiah(monthRevenue)}\n`;
+            }
         });
 
+        csv += `\n,,,GRAND TOTAL SEMUA,${formatRupiah(grandTotal)}\n`;
+
         res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', 'attachment; filename="laporan_penjualan_biji_kopi.csv"');
+        res.setHeader('Content-Disposition', 'attachment; filename="laporan_penjualan_per_bulan.csv"');
         res.status(200).send(csv);
 
     } catch (err) {
