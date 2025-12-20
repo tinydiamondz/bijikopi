@@ -150,14 +150,14 @@ router.post("/add-to-cart", checkLogin, async (req, res) => {
             const [rows] = await db.query("SELECT qty_point FROM point WHERE id_customer = ?", [id_customer]);
             const point = rows.length > 0 ? rows[0].qty_point : 0;
 
-            res.render(type === "food" ? "foods" : "drinks", {
-                role: req.session.role,
-                user: req.session.user,
-                [type === "food" ? "foods" : "drinks"]: listResults,
-                added: 1,
-                point,
-                page: 'cart'
-            });
+        res.render(type === "food" ? "foods" : "drinks", {
+            role: req.session.role,
+            user: req.session.user,
+            [type === "food" ? "foods" : "drinks"]: listResults,
+            added: 1,
+            point,
+            page: type === "food" ? 'foods' : 'drinks'  
+        });
         };
 
         if (results2.length > 0) {
