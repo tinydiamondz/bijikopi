@@ -74,38 +74,7 @@
 </head>
 <body>
     
-<nav>
-    <div class="nav-left">
-        <span class="points-display">
-            ⭐ <%= point %> pts
-        </span>
-        <span class="date-display"><%= currentDateWIB %></span>
-    </div>
-
-    <div class="nav-center">
-        <a href="/" class="<%= typeof page !== 'undefined' && page === 'main' ? 'active' : '' %>">MAIN</a>
-        <a href="/foods" class="<%= typeof page !== 'undefined' && page === 'foods' ? 'active' : '' %>">FOODS</a>
-        <a href="/drinks" class="<%= typeof page !== 'undefined' && page === 'drinks' ? 'active' : '' %>">DRINKS</a>
-        
-        <% if (role === "customer") { %>
-            <a href="/cart" class="<%= typeof page !== 'undefined' && page === 'cart' ? 'active' : '' %>">CART</a>
-            <a href="/transactions" class="<%= typeof page !== 'undefined' && page === 'history' ? 'active' : '' %>">HISTORY</a>
-        <% } %>
-
-        <% if (role === "admin") { %>
-            <a href="/admin/foods">ADMIN ONLY</a>
-        <% } %>
-
-        <a href="/forum" class="<%= typeof page !== 'undefined' && page === 'forum' ? 'active' : '' %>">FORUM</a>
-    </div>
-
-    <div class="nav-right">
-        <span class="logged-as">
-            LOGGED AS <%= role === "admin" ? user.fullname_admin : user.fullname_customer %>
-        </span>
-        <a href="/logout" class="login-btn">LOGOUT</a>
-    </div>
-</nav>
+<%- include('partials/navbar') %>
 
 
     <div class="container">
@@ -377,3 +346,4 @@
 
 </body>
 </html>
+
