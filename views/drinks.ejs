@@ -51,6 +51,8 @@
     </style>
 </head>
 <body>
+
+<%- include('partials/navbar') %>
     <% if (added == 1) { %>
     <div class="popup-overlay" id="popupOverlay">
         <div class="popup">
@@ -78,8 +80,6 @@
         });
     </script>
     <% } %>
-      
- <%- include('partials/navbar') %>
 
     <div class="search-wrapper">
         <input type="text" id="drinkSearch" class="search-input" placeholder="🔍 Cari minuman, harga, atau deskripsi...">
@@ -152,5 +152,4 @@
 
 </body>
 </html>
-
 
