@@ -1,53 +1,78 @@
 <%- include('../partials/_headerAdmin') %>
 
-    <h1>Laporan Penjualan</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>Laporan Penjualan</h1>
+        <a href="/admin/sales/export" class="btn" style="background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+            📥 Download Laporan (CSV)
+        </a>
+    </div>
 
-    <div class="dashboard-cards">
+    <div class="dashboard-cards" style="margin-bottom: 30px;">
         <div class="card card-total">
-            <h3>Total Pendapatan</h3>
+            <h3>Total Pendapatan Keseluruhan</h3>
             <div class="number">Rp <%= new Intl.NumberFormat('id-ID').format(grand_total) %></div>
         </div>
     </div>
 
-    <h2>Rincian Penjualan per Produk</h2>
-    <div style="overflow-x: auto;">
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 5%;">No</th>
-                    <th>Produk / Item</th>
-                    <th style="text-align: center;">Jumlah Terjual</th>
-                    <th>Total Harga</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (details.length > 0) { %>
-                    <% details.forEach((item, index) => { %>
-                    <tr>
-                        <td><%= index + 1 %></td>
+    <% const months = Object.keys(groupedSales); %>
+    
+    <% if (months.length > 0) { %>
+        <% months.forEach(month => { %>
+            
+            <h2 style="margin-top: 40px; border-bottom: 2px solid #d4a373; padding-bottom: 10px; color: #8b5e3c;">
+                📅 Bulan: <%= month %>
+            </h2>
 
-                        <td style="font-weight: 600; color: #2c3e50;">
-                            <%= item.item_name %>
-                        </td>
+            <div style="overflow-x: auto; margin-bottom: 20px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">No</th>
+                            <th>Produk / Item</th>
+                            <th style="text-align: center;">Jumlah Terjual</th>
+                            <th>Total Harga</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% groupedSales[month].forEach((item, index) => { %>
+                        <tr>
+                            <td><%= index + 1 %></td>
 
-                        <td style="text-align: center;">
-                            <span style="background: #e9ecef; padding: 4px 10px; border-radius: 10px; font-weight: bold;">
-                                <%= item.total_qty %>
-                            </span>
-                        </td>
+                            <td style="font-weight: 600; color: #2c3e50;">
+                                <%= item.item_name %>
+                            </td>
 
-                        <td style="font-weight: 600; color: #28a745;">
-                            Rp <%= new Intl.NumberFormat('id-ID').format(item.total_revenue) %>
-                        </td>
-                    </tr>
-                    <% }) %>
-                <% } else { %>
-                    <tr>
-                        <td colspan="4" style="text-align: center;">Belum ada data penjualan.</td>
-                    </tr>
-                <% } %>
-            </tbody>
-        </table>
-    </div>
+                            <td style="text-align: center;">
+                                <span style="background: #e9ecef; padding: 4px 10px; border-radius: 10px; font-weight: bold;">
+                                    <%= item.total_qty %>
+                                </span>
+                            </td>
+
+                            <td style="font-weight: 600; color: #28a745;">
+                                Rp <%= new Intl.NumberFormat('id-ID').format(item.total_revenue) %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                        
+                        <% 
+                            let subtotalMonth = groupedSales[month].reduce((acc, curr) => acc + curr.total_revenue, 0);
+                        %>
+                        <tr style="background-color: #fff3cd;">
+                            <td colspan="3" style="text-align: right; font-weight: bold;">Total Pendapatan <%= month %>:</td>
+                            <td style="font-weight: bold; color: #d35400;">
+                                Rp <%= new Intl.NumberFormat('id-ID').format(subtotalMonth) %>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+        <% }) %>
+    <% } else { %>
+        <div style="text-align: center; padding: 50px; background: #f9f9f9; border-radius: 10px;">
+            <h3>Belum ada data penjualan.</h3>
+        </div>
+    <% } %>
 
 <%- include('../partials/_footerAdmin') %>
