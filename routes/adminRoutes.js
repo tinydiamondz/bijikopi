@@ -5,7 +5,7 @@ const { isAdmin } = require("../middleware/authMiddleware");
 
 router.use("/admin", isAdmin);
 
-// == HALAMAN UTAMA (FOODS, DRINKS, SUPPLIERS)
+// HALAMAN UTAMA (FOODS, DRINKS, SUPPLIERS)
 
 // Rute default, alihkan ke halaman foods
 router.get("/admin", (req, res) => {
@@ -134,7 +134,7 @@ router.get("/admin/suppliers", async (req, res) => {
 
 
 
-// == SEMUA PROSES CRUD (Create, Update, Delete, Export)
+// SEMUA PROSES CRUD (Create, Update, Delete, Export)
 
 //CRUD FOODS
 router.get("/admin/food/add", (req, res) => {
@@ -302,39 +302,78 @@ router.get("/admin/supplier/export", async (req, res) => {
     } catch (err) { res.status(500).send("Server Error"); }
 });
 
-
-// == LAPORAN PENJUALAN (SALES REPORT) - VERSI TEXT MANUAL
+// 1. HALAMAN SALES
 router.get('/admin/sales', async (req, res) => {
     try {
-        // 1. Total Semua Pendapatan
         const queryTotal = "SELECT SUM(Total_transaction) AS grand_total FROM transaction";
         const [resultTotal] = await db.query(queryTotal);
 
-        // 2. Rincian Per Item (Menggunakan Group By Nama Teks)
-        // Kita gunakan TRIM() dan UPPER() agar "Kopi" dan "kopi " terhitung sama
         const queryDetails = `
             SELECT 
+                DATE_FORMAT(date_transaction, '%M %Y') AS month_label,
+                DATE_FORMAT(date_transaction, '%Y-%m') AS sort_key,
                 TRIM(UPPER(menu_transaction)) AS item_name, 
                 SUM(qty_transaction) as total_qty, 
-                SUM(Total_transaction) as total_revenue 
+                SUM(subtotal_transaction) as total_revenue 
             FROM transaction 
-            GROUP BY TRIM(UPPER(menu_transaction)) 
-            ORDER BY total_qty DESC
+            GROUP BY sort_key, month_label, TRIM(UPPER(menu_transaction)) 
+            ORDER BY sort_key DESC, total_qty DESC
         `;
         
-        const [resultDetails] = await db.query(queryDetails);
+        const [rawDetails] = await db.query(queryDetails);
+
+        const groupedSales = {};
+        rawDetails.forEach(row => {
+            if (!groupedSales[row.month_label]) {
+                groupedSales[row.month_label] = [];
+            }
+            groupedSales[row.month_label].push(row);
+        });
 
         res.render('admin/sales', {
             title: 'Laporan Penjualan',
             page_name: 'sales',
             user: req.session.user,
             grand_total: resultTotal[0].grand_total || 0,
-            details: resultDetails
+            groupedSales: groupedSales
         });
 
     } catch (err) {
         console.error("Error sales report:", err);
         res.status(500).send("Database Error: " + err.message);
+    }
+});
+
+// 2. DOWNLOAD CSV (Export Data)
+router.get('/admin/sales/export', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                date_transaction, 
+                id_transaction, 
+                TRIM(UPPER(menu_transaction)) as menu,  
+                Total_transaction 
+            FROM transaction 
+            ORDER BY date_transaction DESC
+        `;
+        const [rows] = await db.query(query);
+
+        if (rows.length === 0) return res.status(404).send("Tidak ada data transaksi.");
+
+        let csv = "Tanggal,ID Transaksi,Menu,Qty,Total Harga\n";
+
+        rows.forEach(row => {
+            const date = new Date(row.date_transaction).toLocaleDateString('id-ID');
+            csv += `"${date}","${row.id_transaction}","${row.menu}",${row.qty_transaction},${row.Total_transaction}\n`;
+        });
+
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename="laporan_penjualan_biji_kopi.csv"');
+        res.status(200).send(csv);
+
+    } catch (err) {
+        console.error("Export Error:", err);
+        res.status(500).send("Server Error");
     }
 });
 
