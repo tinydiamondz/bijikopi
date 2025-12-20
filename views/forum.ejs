@@ -13,34 +13,7 @@
 </head>
 <body>
 
-    <nav>
-
-    <!-- KIRI: POINTS -->
-    <div class="nav-left">
-        <span class="points-display">
-            ⭐ <%= point %> pts
-        </span>
-    </div>
-
-    <!-- TENGAH -->
-    <div class="nav-center">
-      <a href="/" class="<%= page === 'main' ? 'active' : '' %>">MAIN</a>
-      <a href="/foods" class="<%= page === 'foods' ? 'active' : '' %>">FOODS</a>
-      <a href="/drinks" class="<%= page === 'drinks' ? 'active' : '' %>">DRINKS</a>
-      <a href="/cart" class="<%= page === 'cart' ? 'active' : '' %>">CART</a>
-      <a href="/transactions" class="<%= page === 'history' ? 'active' : '' %>">HISTORY</a>
-      <a href="/forum" class="<%= page === 'forum' ? 'active' : '' %>">FORUM</a>
-    </div>
-    
-    <!-- KANAN -->
-    <div class="nav-right">
-        <span class="logged-as">
-            LOGGED AS <%= role === "admin" ? user.fullname_admin : user.fullname_customer %>
-        </span>
-        <a href="/logout" class="login-btn">LOGOUT</a>
-    </div>
-
-</nav>
+    <%- include('partials/navbar') %>
 
   <main class="container">
     <h2 style="font-family: 'Poppins', 'sans-serif';" class="forum-title">Real Experiences from Our Customers</h2>
@@ -95,3 +68,4 @@
 
 </body>
 </html>
+
