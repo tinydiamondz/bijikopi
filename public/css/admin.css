@@ -7,8 +7,8 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
+    background-color: #3e2723;
+    color: #3e2723;
 }
 
 /* 2. NAVBAR STYLING */
@@ -17,14 +17,14 @@ body {
     justify-content: space-between;
     align-items: center;
     
-    background-color: rgba(172, 107, 22, 0.8); 
+    background-color: rgba(78, 52, 46, 0.8);
     
     /* Efek kaca buram */
     backdrop-filter: blur(10px); 
     -webkit-backdrop-filter: blur(10px);
 
     color: white;
-    padding: 1.5rem 2rem;
+    padding: 0.5rem 2rem;
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -349,4 +349,5 @@ form a {
         width: 100%;
     }
 }
+
 
