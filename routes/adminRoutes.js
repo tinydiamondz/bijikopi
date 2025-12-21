@@ -305,8 +305,19 @@ router.get("/admin/supplier/export", async (req, res) => {
 // 1. HALAMAN SALES
 router.get('/admin/sales', async (req, res) => {
     try {
-        const queryTotal = "SELECT SUM(Total_transaction) AS grand_total FROM transaction";
-        const [resultTotal] = await db.query(queryTotal);
+        const search = req.query.search || "";
+        
+        let whereClause = "";
+        let queryParams = [];
+
+        if (search) {
+            whereClause = "WHERE DATE_FORMAT(date_transaction, '%M %Y') LIKE ? OR menu_transaction LIKE ?";
+            const likeStr = `%${search}%`;
+            queryParams = [likeStr, likeStr];
+        }
+
+        const queryTotal = `SELECT SUM(Total_transaction) AS grand_total FROM transaction ${whereClause}`;
+        const [resultTotal] = await db.query(queryTotal, queryParams);
 
         const queryDetails = `
             SELECT 
@@ -316,11 +327,12 @@ router.get('/admin/sales', async (req, res) => {
                 SUM(qty_transaction) as total_qty, 
                 SUM(subtotal_transaction) as total_revenue 
             FROM transaction 
+            ${whereClause}
             GROUP BY sort_key, month_label, TRIM(UPPER(menu_transaction)) 
             ORDER BY sort_key DESC, total_qty DESC
         `;
         
-        const [rawDetails] = await db.query(queryDetails);
+        const [rawDetails] = await db.query(queryDetails, queryParams);
 
         const groupedSales = {};
         rawDetails.forEach(row => {
@@ -335,7 +347,8 @@ router.get('/admin/sales', async (req, res) => {
             page_name: 'sales',
             user: req.session.user,
             grand_total: resultTotal[0].grand_total || 0,
-            groupedSales: groupedSales
+            groupedSales: groupedSales,
+            search: search 
         });
 
     } catch (err) {
@@ -347,6 +360,16 @@ router.get('/admin/sales', async (req, res) => {
 // 2. DOWNLOAD CSV
 router.get('/admin/sales/export', async (req, res) => {
     try {
+        const search = req.query.search || "";
+        
+        let whereClause = "";
+        let queryParams = [];
+
+        if (search) {
+            whereClause = "WHERE DATE_FORMAT(date_transaction, '%M %Y') LIKE ?";
+            queryParams = [`%${search}%`];
+        }
+
         const query = `
             SELECT 
                 date_transaction, 
@@ -355,9 +378,10 @@ router.get('/admin/sales/export', async (req, res) => {
                 qty_transaction, 
                 Total_transaction 
             FROM transaction 
+            ${whereClause}
             ORDER BY date_transaction DESC
         `;
-        const [rows] = await db.query(query);
+        const [rows] = await db.query(query, queryParams);
 
         if (rows.length === 0) return res.status(404).send("Tidak ada data transaksi.");
 
@@ -407,7 +431,8 @@ router.get('/admin/sales/export', async (req, res) => {
         csv += `\n,,,GRAND TOTAL SEMUA,${formatRupiah(grandTotal)}\n`;
 
         res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', 'attachment; filename="laporan_penjualan_per_bulan.csv"');
+        const filename = search ? `laporan_penjualan_${search.replace(/ /g, '_')}.csv` : "laporan_penjualan_per_bulan.csv";
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
         res.status(200).send(csv);
 
     } catch (err) {
