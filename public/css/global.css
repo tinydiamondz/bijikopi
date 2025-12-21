@@ -110,7 +110,7 @@ nav {
   min-width: 120px;
 }
 
-.points-display,
+.points-display, .btn-logout, 
 .date-display {
   background: #f0d58c;
   padding: 5px 12px;
@@ -120,6 +120,7 @@ nav {
   color: #5a3e1b;
   box-shadow: 0 2px 5px rgba(0,0,0,0.15);
   white-space: nowrap;
+  text-decoration: none; /* matikan underline */
 }
 
 /* ===== NAV CENTER ===== */
