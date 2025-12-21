@@ -405,7 +405,7 @@ router.get('/admin/sales/export', async (req, res) => {
             const rowTotal = Number(row.Total_transaction) || 0;
 
             if (currentMonth !== "" && rowMonth !== currentMonth) {
-                csv += `\n--- ${currentMonth} ---\n`;
+                csv += `\n${currentMonth}\n`;
                 csv += monthRowsBuffer;
                 csv += `,,,TOTAL PENDAPATAN ${currentMonth.toUpperCase()},${formatRupiah(monthRevenue)}\n`;
                 
@@ -422,7 +422,7 @@ router.get('/admin/sales/export', async (req, res) => {
             grandTotal += rowTotal;
 
             if (index === rows.length - 1) {
-                csv += `\n--- ${currentMonth} ---\n`;
+                csv += `\n${currentMonth}\n`;
                 csv += monthRowsBuffer;
                 csv += `,,,TOTAL PENDAPATAN ${currentMonth.toUpperCase()},${formatRupiah(monthRevenue)}\n`;
             }
