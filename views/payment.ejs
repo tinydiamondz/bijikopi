@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<%- include('partials/navbar') %>
 <div class="container">
     <h2>Konfirmasi Pembayaran</h2>
 
@@ -113,7 +112,7 @@
 
     // Ambil harga yang sudah diproses backend (mungkin sudah kena diskon Voucher Sabtu)
     // Kita gunakan ini sebagai dasar perhitungan diskon Poin
-    const currentTotal = <%= transaction.total_transaction %>; 
+const currentTotal = parseInt("<%= transaction.total_transaction || 0 %>", 10);
 
     if (checkbox) {
         checkbox.addEventListener('change', function() {

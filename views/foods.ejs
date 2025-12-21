@@ -155,6 +155,31 @@
         });
     </script>
 
+    <!-- Popup Stock -->
+    <div class="popup-overlay" id="stockPopup">
+        <div class="popup">
+            <h3>⚠️ Stok Terbatas!</h3>
+            <p>Jumlah yang dipilih melebihi stok tersedia.</p>
+            <button id="closeStockPopup">Oke</button>
+        </div>
+    </div>
+    
+    <script>
+        function closeStockPopup() {
+            document.getElementById('stockPopup').style.display = 'none';
+        }
+    </script>
+        <% if (errorStock) { %>
+            <script>
+                const stockPopup = document.getElementById('stockPopup');
+                stockPopup.style.display = 'flex';
+            
+                document.getElementById('closeStockPopup').addEventListener('click', closeStockPopup);
+                stockPopup.addEventListener('click', function(e) {
+                    if(e.target === stockPopup) closeStockPopup();
+                });
+        </script>
+        <% } %>
 </body>
 </html>
 

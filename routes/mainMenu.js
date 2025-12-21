@@ -33,37 +33,27 @@ function getCurrentDateTimeWIB() {
 }
 
 // ===================== MAIN PAGE =====================
-router.get("/", checkLogin, async (req, res) => {
-    const role = req.session.role;
-    const user = req.session.user;
+router.get("/", async (req, res) => {
+    const user = req.session.user || null;
+    const role = req.session.role || null;
 
-    try {
-        const [rows] = await db.query(`SELECT qty_point FROM point WHERE id_customer = ?`, [user.id_customer]);
-        const point = rows.length > 0 ? rows[0].qty_point : 0;
-
-        // Cek Status Voucher Sabtu
-        const claimKey = `${getTodayString()}_${user.id_customer}`;
-        const hasClaimed = dailyClaimHistory.has(claimKey);
-        const todayIsSaturday = isSaturday();
-
-        if (todayIsSaturday && hasClaimed) {
-            req.session.voucherActive = true;
-        } else {
-            if (!hasClaimed) req.session.voucherActive = false;
+    let point = 0;
+    if(user){
+        try {
+            const [rows] = await db.query(`SELECT qty_point FROM point WHERE id_customer=?`, [user.id_customer]);
+            point = rows.length > 0 ? rows[0].qty_point : 0;
+        } catch(err){
+            console.error(err);
         }
-
-        res.render("main-menu", { 
-            role, user, point, 
-            currentDateWIB: getCurrentDateTimeWIB(),
-            page: 'main',
-            isSaturday: todayIsSaturday,
-            hasClaimed: hasClaimed
-        });
-
-    } catch (err) {
-        console.error("Error:", err);
-        res.render("main-menu", { role, user, point: 0, currentDateWIB: getCurrentDateTimeWIB(), page: 'main', isSaturday: false, hasClaimed: false });
     }
+
+    res.render("main-menu", { 
+        role, user, point,
+        currentDateWIB: new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
+        page: 'main',
+        isSaturday: isSaturday(),
+        hasClaimed: user ? dailyClaimHistory.has(`${getTodayString()}_${user.id_customer}`) : false
+    });
 });
 
 // ===================== API: KLAIM VOUCHER =====================
@@ -87,7 +77,7 @@ router.get("/foods", checkLogin, async (req, res) => {
         const [foods] = await db.query("SELECT * FROM food");
         const [rows] = await db.query(`SELECT qty_point FROM point WHERE id_customer = ?`, [user.id_customer]);
         const point = rows.length > 0 ? rows[0].qty_point : 0;
-        res.render("foods", { role: req.session.role, user, foods, added: 0, point, page: 'foods' });
+        res.render("foods", { role: req.session.role, user, foods, added: 0, point, page: 'foods', errorStock: false });
     } catch (err) { res.status(500).send("Server error"); }
 });
 
@@ -97,7 +87,7 @@ router.post("/foods", checkLogin, async (req, res) => {
         const [results] = await db.query("SELECT * FROM food");
         const [rows] = await db.query(`SELECT qty_point FROM point WHERE id_customer = ?`, [user.id_customer]);
         const point = rows.length > 0 ? rows[0].qty_point : 0;
-        res.render("foods", { role: req.session.role, user, foods: results, added: 1, point, page: 'foods' });
+        res.render("foods", { role: req.session.role, user, foods: results, added: 1, point, page: 'foods', errorStock: false });
     } catch (err) { res.status(500).send("Server error"); }
 });
 
@@ -107,7 +97,7 @@ router.get("/drinks", checkLogin, async (req, res) => {
         const [results] = await db.query("SELECT * FROM drink");
         const [rows] = await db.query(`SELECT qty_point FROM point WHERE id_customer = ?`, [user.id_customer]);
         const point = rows.length > 0 ? rows[0].qty_point : 0;
-        res.render("drinks", { role: req.session.role, user, drinks: results, added: 0, point, page: 'drinks' });
+        res.render("drinks", { role: req.session.role, user, drinks: results, added: 0, point, page: 'drinks', errorStock: false });
     } catch (err) { res.status(500).send("Server error"); }
 });
 
@@ -117,7 +107,7 @@ router.post("/drinks", checkLogin, async (req, res) => {
         const [results] = await db.query("SELECT * FROM drink");
         const [rows] = await db.query(`SELECT qty_point FROM point WHERE id_customer = ?`, [user.id_customer]);
         const point = rows.length ? rows[0].qty_point : 0;
-        res.render("drinks", { role: req.session.role, user, drinks: results, added: 1, point, page: 'drinks' });
+        res.render("drinks", { role: req.session.role, user, drinks: results, added: 1, point, page: 'drinks', errorStock: false });
     } catch (err) { res.status(500).send("Server error"); }
 });
 
@@ -127,54 +117,70 @@ router.post("/add-to-cart", checkLogin, async (req, res) => {
     const id_customer = req.session.user.id_customer;
 
     try {
-        let sqlItem = type === "food" ? "SELECT * FROM food WHERE id_food=?" : "SELECT * FROM drink WHERE id_drink=?";
+        // Ambil item
+        const sqlItem = type === "food" ? "SELECT * FROM food WHERE id_food=?" : "SELECT * FROM drink WHERE id_drink=?";
         const [result] = await db.query(sqlItem, [id]);
         if (result.length === 0) return res.send("Menu tidak ditemukan");
 
         const item = result[0];
         const name_cart = type === "food" ? item.name_food : item.name_drink;
         const price = type === "food" ? item.price_food : item.price_drink;
+        const stock = type === "food" ? item.qty_food : item.qty_drink;
+
         const id_food = type === "food" ? id : null;
         const id_drink = type === "drink" ? id : null;
 
+        // Cek cart
         let sqlCheck = `SELECT * FROM cart WHERE id_customer=? AND id_food ${id_food ? "=?" : "IS NULL"} AND id_drink ${id_drink ? "=?" : "IS NULL"}`;
-        let paramsCheck = [id_customer];
+        const paramsCheck = [id_customer];
         if (id_food) paramsCheck.push(id_food);
         if (id_drink) paramsCheck.push(id_drink);
 
         const [results2] = await db.query(sqlCheck, paramsCheck);
 
-        const afterUpdateOrInsert = async () => {
+        // Fungsi render halaman setelah update/insert
+        const afterUpdateOrInsert = async (added, errorStock) => {
             const sqlList = type === "food" ? "SELECT * FROM food" : "SELECT * FROM drink";
             const [listResults] = await db.query(sqlList);
             const [rows] = await db.query("SELECT qty_point FROM point WHERE id_customer = ?", [id_customer]);
             const point = rows.length > 0 ? rows[0].qty_point : 0;
 
-        res.render(type === "food" ? "foods" : "drinks", {
-            role: req.session.role,
-            user: req.session.user,
-            [type === "food" ? "foods" : "drinks"]: listResults,
-            added: 1,
-            point,
-            page: type === "food" ? 'foods' : 'drinks'  
-        });
+            return res.render(type === "food" ? "foods" : "drinks", {
+                role: req.session.role,
+                user: req.session.user,
+                [type === "food" ? "foods" : "drinks"]: listResults,
+                added,
+                errorStock,
+                point,
+                page: type === "food" ? "foods" : "drinks"
+            });
         };
 
+        // Logic update / insert
         if (results2.length > 0) {
-            const newQty = results2[0].qty_cart + 1;
-            const newTotal = price * newQty;
-            await db.query(`UPDATE cart SET qty_cart=?, total_cart=? WHERE id_cart=?`, [newQty, newTotal, results2[0].id_cart]);
-            await afterUpdateOrInsert();
+            const currentQtyInCart = results2[0].qty_cart;
+            if (currentQtyInCart >= stock) {
+                return await afterUpdateOrInsert(0, true); // stok habis
+            } else {
+                const newQty = currentQtyInCart + 1;
+                const newTotal = price * newQty;
+                await db.query(`UPDATE cart SET qty_cart=?, total_cart=? WHERE id_cart=?`, [newQty, newTotal, results2[0].id_cart]);
+                return await afterUpdateOrInsert(1, false); // sukses tambah
+            }
         } else {
+            if (stock < 1) return await afterUpdateOrInsert(0, true); // stok habis
             await db.query(`INSERT INTO cart (name_cart, qty_cart, total_cart, id_drink, id_food, id_customer) VALUES (?, 1, ?, ?, ?, ?)`, 
-                [name_cart, price, id_drink, id_food, id_customer]);
-            await afterUpdateOrInsert();
+                [name_cart, price, id_drink, id_food, id_customer]
+            );
+            return await afterUpdateOrInsert(1, false); // sukses tambah
         }
+
     } catch (err) {
         console.error("❌ Database error:", err);
         res.status(500).send("Server error");
     }
 });
+
 
 // Tampilkan cart
 router.get("/cart", checkLogin, async (req, res) => {
@@ -198,7 +204,6 @@ router.get("/cart", checkLogin, async (req, res) => {
         let discount = 0;
         let finalPrice = totalPrice;
 
-        // Diskon Voucher Sabtu (Visual Only di Cart)
         if (req.session.voucherActive) {
             discount = totalPrice * 0.20; 
             finalPrice = totalPrice - discount;
@@ -207,12 +212,24 @@ router.get("/cart", checkLogin, async (req, res) => {
         const [rows] = await db.query(`SELECT qty_point FROM point WHERE id_customer=?`, [id_customer]);
         const point = rows.length > 0 ? rows[0].qty_point : 0;
 
+        // 🔥 Cek query string error dari increment button
+        const errorStock = req.query.error === "stock" ? true : false;
+
         res.render("cart", { 
             role: req.session.role, 
-            user, cart: results, totalPrice, point, page: 'cart',
-            discount, finalPrice
+            user, 
+            cart: results, 
+            totalPrice, 
+            point, 
+            page: 'cart',
+            discount, 
+            finalPrice,
+            errorStock
         });
-    } catch (err) { res.status(500).send("Server error"); }
+    } catch (err) { 
+        console.error(err);
+        res.status(500).send("Server error"); 
+    }
 });
 
 router.post("/cart/remove", checkLogin, async (req, res) => {
@@ -232,6 +249,45 @@ router.post("/cart/remove", checkLogin, async (req, res) => {
         }
         res.redirect("/cart");
     } catch (err) { res.status(500).send("Server error"); }
+});
+
+// ==================== ACTION BUTTON DI CART ==========================
+router.post("/cart/increment", checkLogin, async (req, res) => {
+    const { id_cart } = req.body;
+
+    try {
+        const [rows] = await db.query(`
+            SELECT c.qty_cart, f.qty_food, d.qty_drink, f.price_food, d.price_drink
+            FROM cart c
+            LEFT JOIN food f ON c.id_food = f.id_food
+            LEFT JOIN drink d ON c.id_drink = d.id_drink
+            WHERE c.id_cart = ?
+        `, [id_cart]);
+
+        if(rows.length === 0) return res.redirect("/cart");
+
+        const row = rows[0];
+        const stock = row.qty_food ?? row.qty_drink ?? 0;
+        const price = row.price_food ?? row.price_drink ?? 0;
+
+        // Kalau stok habis, redirect dengan query string error
+        if(row.qty_cart >= stock) {
+            return res.redirect("/cart?error=stock");
+        }
+
+        const newQty = row.qty_cart + 1;
+        const newTotal = price * newQty;
+
+        await db.query(
+            "UPDATE cart SET qty_cart=?, total_cart=? WHERE id_cart=?", 
+            [newQty, newTotal, id_cart]
+        );
+
+        res.redirect("/cart");
+    } catch(err) { 
+        console.error(err);
+        res.status(500).send("Server error"); 
+    }
 });
 
 // ===================== PAYMENT =====================

@@ -114,6 +114,23 @@ input[type="checkbox"] {
   transform: scale(1.05);
 }
 
+
+/* ===== ADD BUTTON ===== */
+.add-btn {
+  background-color: #8d6e63;
+  color: #fffaf5;
+  border: none;
+  border-radius: 5px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.add-btn:hover {
+  background-color: #6d4c41;
+  transform: scale(1.05);
+}
+
 /* ===== EMPTY CART ===== */
 .empty-cart {
   text-align: center;
@@ -267,6 +284,7 @@ input[type="checkbox"] {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     animation: fadeIn 0.3s ease-in-out;
     font-family: 'Poppins', sans-serif;
+    color: white
 }
 
 .popup h3 {

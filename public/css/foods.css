@@ -203,6 +203,7 @@ button:hover {
     }
 }
 /* Overlay latar belakang popup */
+/* popup alert */
 .popup-overlay {
     display: none;
     position: fixed;
@@ -224,6 +225,7 @@ button:hover {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     animation: fadeIn 0.3s ease-in-out;
     font-family: 'Poppins', sans-serif;
+    color: white
 }
 
 .popup h3 {

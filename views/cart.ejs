@@ -64,17 +64,27 @@
                         <td><%= item.qty_cart %></td>
                         <td>Rp <%= item.total_cart.toLocaleString("id-ID") %></td>
                         <td>
+                            <!-- decrement button -->
                             <button 
                                 type="button"
                                 formaction="/cart/remove" 
                                 formmethod="POST" 
                                 name="id_cart" 
                                 value="<%= item.id_cart %>" 
-                                class="remove-btn" 
+                                class="remove-btn"  
                                 formnovalidate>
-                                Remove
+                                -
+                            </button>
+                        
+                            <!-- increment button -->
+                            <button 
+                                type="button" 
+                                class="add-btn"   
+                                data-id="<%= item.id_cart %>">
+                                +
                             </button>
                         </td>
+
                     </tr>
                     <% }) %>
                 </tbody>
@@ -161,14 +171,36 @@
     removeBtns.forEach(btn => {
         btn.addEventListener("click", function(e) {
             e.preventDefault(); // hentikan submit default
-            selectedBtn = btn;
-
-            // Ambil nama item
             const itemRow = btn.closest("tr");
-            const itemName = itemRow.querySelector(".item-name").textContent;
-            popupItemName.textContent = `You want to remove "${itemName}" from cart`;
+            const qty = parseInt(itemRow.querySelector("td:nth-child(3)").textContent); // ambil qty
 
-            popupOverlay.style.display = "flex"; // tampilkan popup
+            if(qty > 1){
+                // langsung kurangi 1 tanpa popup
+                const tempForm = document.createElement("form");
+                tempForm.action = btn.getAttribute("formaction");
+                tempForm.method = btn.getAttribute("formmethod") || "POST";
+
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = btn.name;
+                input.value = btn.value;
+                tempForm.appendChild(input);
+
+                const inputQty = document.createElement("input");
+                inputQty.type = "hidden";
+                inputQty.name = "decrement"; // backend bisa cek param ini
+                inputQty.value = "1";
+                tempForm.appendChild(inputQty);
+
+                document.body.appendChild(tempForm);
+                tempForm.submit();
+            } else {
+                // qty = 1 → tampilkan popup
+                selectedBtn = btn;
+                const itemName = itemRow.querySelector(".item-name").textContent;
+                popupItemName.textContent = `You want to remove "${itemName}" from cart`;
+                popupOverlay.style.display = "flex";
+            }
         });
     });
 
@@ -196,7 +228,53 @@
         popupOverlay.style.display = "none";
         selectedBtn = null;
     });
-</script>
 
+    // === ACTION INCREMENT BUTTON ===
+    const addBtns = document.querySelectorAll(".add-btn");
+
+    addBtns.forEach(btn => {
+        btn.addEventListener("click", function() {
+            const id_cart = btn.dataset.id;
+        
+            // buat form sementara
+            const tempForm = document.createElement("form");
+            tempForm.action = "/cart/increment"; // endpoint baru untuk increment
+            tempForm.method = "POST";
+        
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "id_cart";
+            input.value = id_cart;
+            tempForm.appendChild(input);
+        
+            document.body.appendChild(tempForm);
+            tempForm.submit();
+        });
+    });
+
+</script>
+<% if (errorStock) { %>
+    <!-- Popup Alert -->
+    <div class="popup-overlay" id="stockPopup">
+        <div class="popup">
+            <h3>⚠️ Stok Terbatas!</h3>
+            <p>Jumlah yang dipilih melebihi stok tersedia.</p>
+            <button onclick="closePopup()">Oke</button>
+        </div>
+    </div>
+<% } %>
+
+
+<script>
+    function closePopup() {
+        document.getElementById('stockPopup').style.display = 'none';
+    }
+    </script>
+    <% if (errorStock) { %>
+    <script>
+        const popup = document.getElementById('stockPopup');
+        popup.style.display = 'flex';
+    </script>
+    <% } %>
 </body>
 </html>

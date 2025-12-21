@@ -1,12 +1,11 @@
 
 <nav>
     <div class="nav-left">
-    <span class="points-display">
-        ⭐ <%= (typeof point !== 'undefined' && point) ? point : 0 %> pts
-    </span>
+        <span class="points-display">
+            ⭐ <%= (typeof point !== 'undefined' && point) ? point : '-' %> pts
+        </span>
 
         <%
-        // Kita buat logika tanggal pake Javascript biasa disini
         const now = new Date();
         const options = {
             weekday: 'long',
@@ -19,8 +18,8 @@
         %>
 
         <span class="date-display">
-        <%= hariIni %>
-    </span>
+            <%= hariIni %>
+        </span>
     </div>
 
     <div class="nav-center">
@@ -30,11 +29,8 @@
         <a href="/foods" class="<%= isActive('foods') %>">FOODS</a>
         <a href="/drinks" class="<%= isActive('drinks') %>">DRINKS</a>
         <a href="/profile" class="<%= isActive('profile') %>">PROFILE</a>
-
-        <% if (typeof role !== 'undefined' && role === "customer") { %>
-            <a href="/cart" class="<%= isActive('cart') %>">CART</a>
-            <a href="/transactions" class="<%= isActive('history') %>">HISTORY</a>
-        <% } %>
+        <a href="/cart" class="<%= isActive('cart') %>">CART</a>
+        <a href="/transactions" class="<%= isActive('history') %>">HISTORY</a>
 
         <% if (typeof role !== 'undefined' && role === "admin") { %>
             <a href="/admin/foods">ADMIN ONLY</a>
@@ -44,9 +40,16 @@
     </div>
 
     <div class="nav-right">
-        <% if (typeof user !== 'undefined') { %>
+        <% 
+            let displayName = '-';
+            if (user) {
+                displayName = (role === "admin" ? user.fullname_admin : user.fullname_customer) || '-';
+            }
+        %>
+
+        <% if (user) { %>
             <span class="logged-as">
-                LOGGED AS <%= typeof role !== 'undefined' && role === "admin" ? user.fullname_admin : user.fullname_customer %>
+                LOGGED AS <%= displayName %>
             </span>
             <a href="/logout" class="btn-logout">LOGOUT</a>
         <% } else { %>
@@ -54,3 +57,4 @@
         <% } %>
     </div>
 </nav>
+
