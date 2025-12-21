@@ -1,4 +1,10 @@
 /* --- Root & Reset --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", Arial, sans-serif;
+}
 :root {
     --gold-coffee: #d4a373;
     --dark-espresso: #2d1e16;

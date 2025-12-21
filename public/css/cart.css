@@ -10,13 +10,6 @@ html {
   overflow-y: scroll;
 }
 
-/* ===== BODY ===== */
-body {
-  background-color: #f5f3ef;
-  color: #3e2723;
-  background: radial-gradient(circle at center, #f7f3ef, #d7ccc8);
-  transition: background 0.3s ease;
-}
 
 /* Efek Glow Kursor */
 .glow {
@@ -46,12 +39,13 @@ body {
 /* ===== CONTAINER ===== */
 .container {
   max-width: 950px;
-  margin: 40px auto;
+  margin: 80px auto 40px auto; /* 80px dari atas, 40px dari bawah */
   padding: 0 24px 30px;
   background-color: #fffaf5;
   border-radius: 16px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
+
 
 .container h1 {
   text-align: center;

@@ -10,17 +10,15 @@ body {
     background-color: #f5f3ef;
     color: #3e2723;
     font-family: "Poppins", Arial, sans-serif;
-    margin: 0;
-    padding: 0;
 }
 
 .container {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 20px;
-    background-color: #fffaf5;
-    border-radius: 16px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  max-width: 850px;
+  margin: 60px auto;
+  background-color: #fff;
+  padding: 30px 40px;
+  border-radius: 15px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
 }
 
 
@@ -97,8 +95,11 @@ h2 {
     }
 
     .container {
-        max-width: 90%;
-        padding: 25px;
+      max-width: 950px;
+      margin: 80px auto 40px auto; /* 80px dari atas, 40px dari bawah */
+      background-color: #fffaf5;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     }
 }
 

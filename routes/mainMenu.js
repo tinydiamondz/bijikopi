@@ -531,17 +531,17 @@ router.get("/transactions", checkLogin, async (req, res) => {
     try {
         const [rows] = await db.query(`SELECT qty_point FROM point WHERE id_customer = ?`, [id_customer]);
         const point = rows.length ? rows[0].qty_point : 0;
-
+        
         const [rawTransactions] = await db.query(`SELECT * FROM transaction WHERE id_customer = ? ORDER BY date_transaction DESC`, [id_customer]);
-
+        
         let totalHistory = 0;
-
+        
         // PROSES DATA DI BACKEND
         const transactions = rawTransactions.map(tr => {
             const menuArr = tr.menu_transaction ? tr.menu_transaction.split(',') : [];
             const qtyArr = tr.qty_transaction ? tr.qty_transaction.toString().split(',') : [];
             const subtotalArr = tr.subtotal_transaction ? tr.subtotal_transaction.toString().split(',') : [];
-
+            
             // --- REVISI DI SINI ---
             // Kita hitung manual total dari string subtotal_transaction
             // Mengabaikan kolom 'Total_transaction' di database
@@ -552,10 +552,10 @@ router.get("/transactions", checkLogin, async (req, res) => {
                 const price = Number(priceStr.trim()) || 0;
                 transactionSum += price;
             });
-
+            
             // Akumulasi ke Total Pengeluaran Keseluruhan
             totalHistory += transactionSum;
-
+            
             return {
                 id_transaction: tr.id_transaction,
                 date_transaction: tr.date_transaction,
@@ -567,7 +567,7 @@ router.get("/transactions", checkLogin, async (req, res) => {
                 final_total: transactionSum 
             };
         });
-
+        
         res.render("transaction", { 
             user: req.session.user, 
             role: req.session.role, 
@@ -624,8 +624,9 @@ router.get("/rating/:id_transaction", checkLogin, async (req, res) => {
 });
 
 router.get("/profile", checkLogin, async (req, res) => {
-    const user = req.session.user;
-
+    const user = req.session.user; // ambil object user utuh
+    const id_customer = user.id_customer;
+    
     // Data 5 Anggota Tim
     const teamMembers = [
         {
@@ -681,20 +682,20 @@ router.get("/profile", checkLogin, async (req, res) => {
     ];
 
     try {
-        // Ambil point dari session atau db (default 0 jika tidak ada)
-        const point = user.point || 0;
+        const [rows] = await db.query(`SELECT qty_point FROM point WHERE id_customer = ?`, [id_customer]);
+        const point = rows.length ? rows[0].qty_point : 0;
 
-        res.render("profile", { 
-            role: req.session.role, 
-            user: user, 
-            added: 0, 
-            point: point, 
+        res.render("profile", {
+            role: req.session.role,
+            user,           // sekarang object utuh
+            added: 0,
+            point,
             page: 'profile',
-            teamMembers: teamMembers // Variabel ini sekarang sudah terdefinisi
+            teamMembers
         });
-    } catch (err) { 
+    } catch (err) {
         console.error("Error rendering profile:", err);
-        res.status(500).send("Server error"); 
+        res.status(500).send("Server error");
     }
 });
 
