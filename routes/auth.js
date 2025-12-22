@@ -4,7 +4,7 @@ const db = require("../connect"); // pool.promise()
 const session = require("express-session"); 
 const bcrypt = require("bcrypt");
 
-//TAMPIL REGISTER
+// ===================== TAMPIL REGISTER =====================
 router.get("/register", (req, res) => {
     res.render("register", {
         error: null,
@@ -14,14 +14,14 @@ router.get("/register", (req, res) => {
     req.session.old = null;
 });
 
-//REGISTER
+// ===================== REGISTER =====================
 router.post("/register", async (req, res) => {
     console.log("=== REGISTER START ===");
     console.log("REQ BODY:", req.body);
 
     const { fullname, email, pnumber, username, password, retypepassword } = req.body;
 
-    // SIMPAN INPUT LAMA (KECUALI PASSWORD)
+    // 🔥 SIMPAN INPUT LAMA (KECUALI PASSWORD)
     req.session.old = { fullname, email, pnumber, username };
 
     try {
@@ -80,7 +80,7 @@ router.post("/register", async (req, res) => {
     }
 });
 
-//LOGIN 
+// ===================== LOGIN =====================
 router.get("/login", (req, res) => {
     const success = req.session.success || null;
     req.session.success = null; // flash (hapus setelah tampil)
@@ -138,3 +138,5 @@ router.post("/login", async (req, res) => {
         res.status(500).send("Server error");
     }
 });
+
+module.exports = router;
