@@ -15,6 +15,7 @@ router.get("/register", (req, res) => {
 });
 
 // ===================== REGISTER =====================
+// ===================== REGISTER =====================
 router.post("/register", async (req, res) => {
     console.log("=== REGISTER START ===");
     console.log("REQ BODY:", req.body);
@@ -88,9 +89,7 @@ router.post("/register", async (req, res) => {
         // SUCCES DIRACT LOGIN 
         res.redirect("/login");
 
-        });
-
-    } catch (err) {
+    } catch (err) {  // <- perbaikan: ganti }); menjadi }
         console.error("❌ REGISTER ERROR:", err);
         res.render("register", {
             error: "Terjadi kesalahan server!",
@@ -99,6 +98,7 @@ router.post("/register", async (req, res) => {
         });
     }
 });
+
 
 // ===================== LOGIN =====================
 router.get("/login", (req, res) => {

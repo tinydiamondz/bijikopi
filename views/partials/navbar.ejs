@@ -9,6 +9,7 @@
 <div class="steam" style="left: 80%; width:10px; height:46px; animation-delay:1.2s;"></div>
 <div class="steam" style="left: 90%; width:12px; height:52px; animation-delay:0.3s;"></div>
 <!-- nitip ya tin div diatas ~rapi -->
+
 <nav>
     <div class="nav-left">
         <span class="points-display">
@@ -38,15 +39,13 @@
         <a href="/" class="<%= isActive('main') %>">MAIN</a>
         <a href="/foods" class="<%= isActive('foods') %>">FOODS</a>
         <a href="/drinks" class="<%= isActive('drinks') %>">DRINKS</a>
-        <a href="/profile" class="<%= isActive('profile') %>">PROFILE</a>
         <a href="/cart" class="<%= isActive('cart') %>">CART</a>
         <a href="/transactions" class="<%= isActive('history') %>">HISTORY</a>
-
+        <a href="/forum" class="<%= isActive('forum') %>">FORUM</a>
         <% if (typeof role !== 'undefined' && role === "admin") { %>
             <a href="/admin/foods">ADMIN ONLY</a>
         <% } %>
-
-        <a href="/forum" class="<%= isActive('forum') %>">FORUM</a>
+        <a href="/profile" class="<%= isActive('profile') %>">PROFILE</a>
     </div>
 
     <div class="nav-right">

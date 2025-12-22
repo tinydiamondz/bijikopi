@@ -6,7 +6,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Poppins', sans-serif;
-    color: #f3e3d3; /* krem terang untuk teks */
+    color: #83582e; /* krem terang untuk teks */
     background: linear-gradient(135deg, #3e2723, #4e342e, #5d4037);
     background-size: 400% 400%;
     animation: gradientShift 25s ease infinite;
