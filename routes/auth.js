@@ -85,11 +85,9 @@ router.post("/register", async (req, res) => {
 
         // 🧹 BERSIHKAN INPUT LAMA
         req.session.old = null;
+        // SUCCES DIRACT LOGIN 
+        res.redirect("/login");
 
-        res.render("register", {
-            success: "✅ Akun berhasil didaftarkan!",
-            error: null,
-            old: {}
         });
 
     } catch (err) {
@@ -159,3 +157,4 @@ router.post("/login", async (req, res) => {
 });
 
 module.exports = router;
+
