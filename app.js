@@ -5,21 +5,18 @@ require("dotenv").config();
 const authRouter = require("./routes/auth");
 const mainMenuRouter = require("./routes/mainMenu");
 const adminRouter = require("./routes/adminRoutes");
-const PORT = process.env.SRV_PORT;
+const fs = require("fs");
+const https = require("https");
+
+// Baca port dari env atau default 443
+const PORT = process.env.SRV_PORT || 443;
 
 const app = express();
 
 // ===== Middleware =====
-// Static files (CSS, JS, images)
 app.use(express.static("public"));
-
-// Body parser untuk form URL-encoded
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Body parser untuk JSON (buat fetch / rating)
 app.use(express.json());
-
-// Session
 app.use(
   session({
     secret: "cs_secret",
@@ -28,7 +25,6 @@ app.use(
   })
 );
 
-// View engine
 app.set("view engine", "ejs");
 
 // ===== Routes =====
@@ -41,5 +37,15 @@ app.use((req, res) => {
   res.status(404).send("<h1>404 Not Found</h1>");
 });
 
-// Jalankan server
-app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
+app.listen(8080, () => {
+  console.log("Server running at www.bijikopi.store or 72.62.121.156");
+})
+// // ===== HTTPS Server =====
+// const options = {
+//   key: fs.readFileSync("/path/to/your/key.pem"),   // ganti path sesuai sertifikat
+//   cert: fs.readFileSync("/path/to/your/cert.pem")  // ganti path sesuai sertifikat
+// };
+
+// https.createServer(options, app).listen(PORT, () => {
+//   console.log(`Server running at https://localhost:${PORT}`);
+// });
