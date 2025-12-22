@@ -1,10 +1,10 @@
-const express = require("express"); 
+const express = require("express");  
 const router = express.Router();
 const db = require("../connect"); // pool.promise()
 const session = require("express-session"); 
 const bcrypt = require("bcrypt");
 
-// ===================== TAMPIL REGISTER =====================
+//TAMPIL REGISTER
 router.get("/register", (req, res) => {
     res.render("register", {
         error: null,
@@ -14,15 +14,14 @@ router.get("/register", (req, res) => {
     req.session.old = null;
 });
 
-
-// ===================== REGISTER =====================
+//REGISTER
 router.post("/register", async (req, res) => {
     console.log("=== REGISTER START ===");
     console.log("REQ BODY:", req.body);
 
     const { fullname, email, pnumber, username, password, retypepassword } = req.body;
 
-    // 🔥 SIMPAN INPUT LAMA (KECUALI PASSWORD)
+    // SIMPAN INPUT LAMA (KECUALI PASSWORD)
     req.session.old = { fullname, email, pnumber, username };
 
     try {
@@ -35,15 +34,11 @@ router.post("/register", async (req, res) => {
         `;
 
         const [results] = await db.query(sqlCheck, [username, email, username, email]);
-        console.log("CHECK RESULT:", results);
 
-        // ❌ USERNAME / EMAIL SUDAH ADA
         if (results.length > 0) {
-            console.log("USERNAME / EMAIL ALREADY EXISTS");
-
             const usernameUsed = results.some(r => r.username === username);
             if (usernameUsed) {
-                req.session.old.username = ""; // ❗ KOSONGKAN USERNAME SAJA
+                req.session.old.username = "";
             }
 
             return res.render("register", {
@@ -53,9 +48,7 @@ router.post("/register", async (req, res) => {
             });
         }
 
-        // ❌ PASSWORD TIDAK SAMA
         if (retypepassword != password) {
-            console.log("PASSWORD NOT MATCH");
             return res.render("register", {
                 error: "Password doesn't matches!",
                 success: null,
@@ -63,33 +56,21 @@ router.post("/register", async (req, res) => {
             });
         }
 
-        // ✅ HASH PASSWORD
         const hashedPassword = await bcrypt.hash(password, 10);
-        console.log("HASHED PASSWORD:", hashedPassword);
 
-        const sqlInsert = `
+        await db.query(`
             INSERT INTO customer 
             (fullname_customer, email_customer, pnumber_customer, username_customer, password_customer)
             VALUES (?, ?, ?, ?, ?)
-        `;
+        `, [fullname, email, pnumber, username, hashedPassword]);
 
-        await db.query(sqlInsert, [
-            fullname,
-            email,
-            pnumber,
-            username,
-            hashedPassword
-        ]);
-
-        console.log("REGISTER SUCCESS");
-        console.log("=== REGISTER END ===");
-
-        // 🧹 BERSIHKAN INPUT LAMA
+        // ✅ TAMBAHAN SAJA DI SINI
         req.session.old = null;
-        // SUCCES DIRACT LOGIN 
-        res.redirect("/login");
+        req.session.success = "Akun Berhasil Dibuat";
 
-    } catch (err) {  // <- perbaikan: ganti }); menjadi }
+        return res.redirect("/login");
+
+    } catch (err) {
         console.error("❌ REGISTER ERROR:", err);
         res.render("register", {
             error: "Terjadi kesalahan server!",
@@ -99,16 +80,18 @@ router.post("/register", async (req, res) => {
     }
 });
 
-
-// ===================== LOGIN =====================
+//LOGIN 
 router.get("/login", (req, res) => {
-    res.render("login", { error: null });
+    const success = req.session.success || null;
+    req.session.success = null; // flash (hapus setelah tampil)
+
+    res.render("login", {
+        error: null,
+        success
+    });
 });
 
 router.post("/login", async (req, res) => {
-    console.log("=== LOGIN START ===");
-    console.log("REQ BODY:", req.body);
-
     const { username, password } = req.body;
 
     if (!username || !password) {
@@ -155,6 +138,3 @@ router.post("/login", async (req, res) => {
         res.status(500).send("Server error");
     }
 });
-
-module.exports = router;
-
