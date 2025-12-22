@@ -14,7 +14,7 @@ router.get("/register", (req, res) => {
     req.session.old = null;
 });
 
-// ===================== REGISTER =====================
+
 // ===================== REGISTER =====================
 router.post("/register", async (req, res) => {
     console.log("=== REGISTER START ===");
