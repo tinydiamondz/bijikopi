@@ -37,7 +37,7 @@ app.use((req, res) => {
   res.status(404).send("<h1>404 Not Found</h1>");
 });
 
-app.listen(8080, () => {
+app.listen(80, () => {
   console.log("Server running at www.bijikopi.store or 72.62.121.156");
 })
 // // ===== HTTPS Server =====
