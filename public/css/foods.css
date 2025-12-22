@@ -93,109 +93,6 @@ button:hover {
   transform: scale(1.05);
 }
 
-/* ===== RESPONSIVE ===== */
-
-@media (max-width: 768px) {
-  .food-item {
-    flex-direction: column;
-  }
-  .food-img {
-    width: 100%;
-    height: 200px;
-  }
-  .food-info {
-    padding: 20px;
-  }
-}
-
-.add-btn {
-    background-color: #4e342e;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.add-btn:hover {
-    background-color: #6d4c41;
-}
-
-.out-of-stock-btn {
-    background-color: #888;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: not-allowed;
-    opacity: 0.8;
-}
-@media (max-width: 992px) {
-    nav {
-        padding: 10px 20px;
-    }
-
-    .nav-center {
-        gap: 20px;
-    }
-
-    .container {
-        max-width: 90%;
-        padding: 25px;
-    }
-}
-
-/* HP / Mobile */
-@media (max-width: 600px) {
-    nav {
-        flex-direction: column;
-        padding: 15px;
-        gap: 10px;
-    }
-
-    .nav-center {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .nav-right {
-        position: static;
-        flex-direction: column;
-        align-items: center;
-        gap: 6px;
-    }
-
-    .container {
-        margin: 20px;
-        padding: 20px;
-    }
-
-    .rating-box {
-        padding: 15px;
-    }
-
-    .rating-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
-    }
-
-    .username {
-        font-size: 15px;
-    }
-
-    .stars {
-        font-size: 16px;
-    }
-
-    .comment {
-        font-size: 14px;
-    }
-
-    .date {
-        font-size: 12px;
-    }
-}
 /* Overlay latar belakang popup */
 /* popup alert */
 .popup-overlay {
@@ -243,7 +140,4 @@ button:hover {
     background: #256628;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
-}
+

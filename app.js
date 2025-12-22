@@ -38,7 +38,7 @@ app.use((req, res) => {
 });
 
 app.listen(80, () => {
-  console.log("Server running at www.bijikopi.store or 72.62.121.156");
+  console.log("Server running at www.bijikopi.store or 72.62.121.156\ntry it locally http://localhost");
 })
 // // ===== HTTPS Server =====
 // const options = {

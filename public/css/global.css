@@ -244,3 +244,40 @@ nav {
     font-size: 11px;
   }
 }
+
+/* Responsif untuk layar lebih kecil */
+@media (max-width: 768px) {
+    .banner-grid {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+    .banner-item {
+        width: 90%;
+        height: auto;
+    }
+    .banner-item img {
+        height: 200px;
+    }
+}
+
+
+/* Responsif untuk layar lebih kecil */
+@media (max-width: 768px) {
+    .carousel-container {
+        width: 95%;
+        margin: 20px auto;
+    }
+    .carousel-btn {
+        padding: 8px 12px;
+        font-size: 20px;
+    }
+    .carousel-indicators {
+        bottom: 10px;
+        gap: 6px;
+    }
+    .indicator {
+        width: 10px;
+        height: 10px;
+    }
+  }
